@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Http\Controllers\Payment;
+
+use App\Http\Helpers\UserPermissionHelper;
+use App\Models\Package;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Language;
+use App\Services\PaymentGateway\PaystackService;
+use Illuminate\Support\Facades\Session;
+use App\Services\Tenant\ExtendPackage;
+use App\Services\Tenant\RegistrationService;
+use App\Traits\FrontendLanguage;
+
+class PaystackController extends Controller
+{
+    use FrontendLanguage;
+    private $paystackPaymentService;
+
+    public function __construct()
+    {
+        $this->paystackPaymentService = new PaystackService();
+    }
+
+
+    /**
+     * Redirect the User to Paystack Payment Page
+     * @return
+     */
+    public function paymentProcess(Request $request, $_amount, $_email, $_success_url, $_cancle_url, $webCuryency)
+    {
+        $validCurrency = $this->paystackPaymentService->checkCurrency($webCuryency, array("NGN"));
+
+        if (!$validCurrency) {
+            return redirect()->back()->with('error', __('Currency is not valid for this payment gateway') . '.')->withInput($request->all());
+        }
+        Session::put('request', $request->all());
+        $this->paystackPaymentService->setCredentials(true);
+        return $this->paystackPaymentService->makePayment($_amount, $_email, $_success_url, $_cancle_url);
+    }
+
+    public function successPayment(Request $request)
+    {
+        $cancle_url = route('membership.paystack.cancle');
+
+        if ($request['trxref'] === $request['reference']) {
+
+            $paymentFor = Session::get('paymentFor');
+            $requestData = Session::get('request');
+
+
+            $currentLang = $this->defaultLang();
+            $be = $currentLang->basic_extended;
+            $bs = $currentLang->basic_setting;
+
+            $package = Package::find($requestData['package_id']);
+            $transaction_id = UserPermissionHelper::uniqidReal(8);
+            $transaction_details = json_encode($request['trxref']);
+            $requestData['discount'] = session()->has('coupon_amount') ? session()->get('coupon_amount') : 0;
+            $requestData['coupon_code'] = session()->has('coupon') ? session()->get('coupon') : NULL;
+            $requestData['currency'] = $be->base_currency_text ?? "USD";
+            $requestData['currency_symbol'] =  $be->base_currency_symbol ?? $be->base_currency_text;
+            $requestData['package_price'] = $package->price;
+            $requestData['payment_method'] = 'Paystack';
+            $requestData['transaction_id'] = $transaction_id;
+            $requestData['package_title'] = $package->title;
+            $requestData['website_title'] = $bs->website_title;
+            $requestData['transaction_details'] = $transaction_details ?? null;
+            $requestData['settings'] =  json_encode($be);
+
+            if ($paymentFor == "membership") {
+                $requestData['is_trial'] = $requestData["package_type"] == "regular" ? 0 : 1;
+                $requestData['trial_days'] = $requestData["package_type"] == "regular" ? 0 : $requestData["trial_days"];
+                $tenantRegistration = new RegistrationService();
+                $tenantRegistration->register($requestData);
+
+                session()->flash('success', __('successful_payment'));
+                Session::forget('request');
+                Session::forget('paymentFor');
+                return redirect()->route('success.page');
+            } elseif ($paymentFor == "extend") {
+
+                $requestData['is_trial'] =   0;
+                $requestData['trial_days'] =  0;
+                $tenantExtendedPackage = new ExtendPackage();
+                $tenantExtendedPackage->exdendPackage($requestData);
+
+                session()->flash('success', __('successful_payment'));
+                Session::forget('request');
+                Session::forget('paymentFor');
+                return redirect()->route('success.page');
+            }
+            // Handle success (e.g., update database, send email, etc.)
+            return redirect()->route('success.page')->with('success', __('Payment completed') . '.');
+        } else {
+            return redirect($cancle_url);
+        }
+    }
+
+
+    public function cancelPayment()
+    {
+        $requestData = Session::get('request');
+        $paymentFor = Session::get('paymentFor');
+        session()->flash('warning', __('cancel_payment'));
+        if ($paymentFor == "membership") {
+            return redirect()->route('front.register.view', ['status' => $requestData['package_type'], 'id' => $requestData['package_id']])->withInput($requestData);
+        } else {
+            return redirect()->route('user.plan.extend.checkout', ['package_id' => $requestData['package_id']])->withInput($requestData);
+        }
+    }
+}

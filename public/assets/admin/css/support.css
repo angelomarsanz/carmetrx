@@ -1,0 +1,49 @@
+ /* ticket conversation css start */
+ .msg p {
+   margin-bottom: 0px;
+ }
+
+ body[data-background-color=dark] .msg p span {
+   color: rgba(169, 175, 187, 0.82) !important;
+ }
+
+ .single-message {
+   /* background: #1d2132; */
+   border-radius: 8px;
+   padding: 20px 30px;
+   margin-bottom: 20px;
+   max-width: 98%;
+   box-shadow: 0px 0px 8px #3b3f44;
+ }
+
+ .single-message:last-child {
+   margin-bottom: 0px;
+ }
+
+ .single-message .user-details {
+   display: flex;
+   align-items: center;
+ }
+
+ .single-message .user-details img {
+   width: 100%;
+   border-radius: 50%;
+ }
+
+ .single-message .user-img {
+   width: 40px;
+ }
+
+ .single-message .user-infos span {
+   display: block;
+ }
+
+ .single-message .user-infos span.type {
+   margin: 10px 0px;
+ }
+
+ .single-message .message {
+   margin-top: 10px;
+ }
+
+ /* ticket conversation css end */

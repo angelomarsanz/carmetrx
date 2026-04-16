@@ -1,0 +1,66 @@
+/* Accordion Customize */
+.version {
+    border: 1px solid #0000003a;
+    margin-bottom: 20px;
+}
+
+.version-header button[aria-expanded=true] {
+    background-color: #6861CE !important;
+    color: #fff;
+}
+
+.version-header button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: left;
+    padding: 20px 30px;
+}
+
+.version-header button:hover,
+.version-header button:focus {
+    text-decoration: none !important;
+}
+
+body:not([data-background-color="dark"]) .version-header button {
+    color: #0056b3;
+}
+
+body:not([data-background-color="dark"]) .version-header button[aria-expanded="true"],
+body[data-background-color="dark"] .version-header button[aria-expanded="false"]:hover {
+    color: #fff;
+}
+
+.version-header button i {
+    margin-right: 10px;
+}
+
+.version-body .list-group button {
+    color: #fff;
+    padding-left: 60px;
+    font-size: 16px;
+    position: relative;
+}
+
+.version-body .list-group button::before {
+    content: '\f101';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.version-body .list-group button a {
+    border-radius: 50px;
+    float: right;
+    margin-right: 30px;
+}
+
+.version-body .list-group button a.activated {
+    cursor: auto;
+    background-color: #31CE36 !important;
+    border: 1px solid #31CE36 !important;
+}

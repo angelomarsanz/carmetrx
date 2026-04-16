@@ -1,0 +1,35 @@
+/*---------------------------
+** Cookie alert css
+---------------------------*/
+
+.cookie-consent {
+    position: fixed;
+    background-color: #262938;
+    bottom: 0px;
+    width: 100%;
+    padding: 15px 0px;
+    z-index: 10000000000;
+    color: #fff;
+}
+
+.cookie-consent .container {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media only screen and (max-width: 991px) {
+    .cookie-container {
+        display: block;
+        text-align: center;
+    }
+
+    button.cookie-agree {
+        margin-top: 15px;
+    }
+
+    span.cookie-message {
+        line-height: 20px;
+        display: block;
+    }
+}
