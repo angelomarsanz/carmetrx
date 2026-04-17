@@ -1,0 +1,23 @@
+{
+    "name": "reda/integraciones",
+    "description": "Módulo de Integraciones de Mercado Libre, Infocasas y otros.",
+    "type": "laravel-package",
+    "autoload": {
+        "psr-4": {
+            "Reda\\Integraciones\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.2", 
+        "illuminate/support": "^11.0" 
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Reda\\Integraciones\\IntegracionesServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
