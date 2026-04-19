@@ -11,6 +11,8 @@
     <link rel="icon" href="{{ asset('assets/front/img/' . $bs->favicon) }}">
     @includeif('admin.partials.styles')
    
+    {{-- CSS de Integraciones (Global) --}}
+    <link rel="stylesheet" href="{{ asset('css/integraciones.css?v=' . time()) }}"> 
 
     @yield('styles')
     @if (!empty($currentLang) && $currentLang->rtl == 1)
@@ -72,6 +74,8 @@
       });
     </script>
 
+     {{-- JS de Integraciones (Global) --}}
+     <script src="{{ asset('js/integraciones.js?v=' . time()) }}"></script>
  
     <div class="request-loader">
         <img src="{{ asset('assets/admin/img/loader.gif') }}" alt="">

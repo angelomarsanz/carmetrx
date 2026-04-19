@@ -10,8 +10,7 @@
      <link rel="icon" href="{{ asset($userBs->favicon) }}">
      @includeif('user.partials.styles')
 
-    {{-- CSS de Integraciones (Global) --}}
-    <link rel="stylesheet" href="{{ asset('css/integraciones.css?v=' . time()) }}"> 
+
 
      @yield('styles')
      @if (!empty($currentLang) && $currentLang->rtl == 1)
@@ -64,9 +63,6 @@
      </div>
 
      @includeif('user.partials.scripts')
-
-     {{-- JS de Integraciones (Global) --}}
-     <script src="{{ asset('js/integraciones.js?v=' . time()) }}"></script>
 
      {{-- Loader --}}
      <div class="request-loader">

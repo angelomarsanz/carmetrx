@@ -19,6 +19,9 @@
     {{-- include styles --}}
     @includeIf('agent.partials.styles')
 
+    {{-- CSS de Integraciones (Global) --}}
+    <link rel="stylesheet" href="{{ asset('css/integraciones.css?v=' . time()) }}"> 
+
     {{-- additional style --}}
     @yield('style')
 
@@ -78,6 +81,9 @@
 
     {{-- include scripts --}}
     @includeIf('agent.partials.scripts')
+
+    {{-- JS de Integraciones (Global) --}}
+    <script src="{{ asset('js/integraciones.js?v=' . time()) }}"></script>
 
     {{-- additional script --}}
     @yield('variables')

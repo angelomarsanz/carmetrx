@@ -1,28 +1,43 @@
-{{-- Extiende el layout del Dashboard de Usuario --}}
-@extends('user.layout')
+@php
+    /**
+     * Lógica de detección por Guards (basada en tu plugin de garantías)
+     * Esto asegura que el layout corresponda al nivel de acceso del usuario.
+     */
+    if (auth()->guard('admin')->check()) {
+        $layout = 'admin.layout';
+    } elseif (auth()->guard('agent')->check()) {
+        $layout = 'agent.layout';
+    } else {
+        // Por defecto para usuarios/clientes o si no hay un guard específico detectado
+        $layout = 'user.layout';
+    }
+@endphp
 
-@section('styles')
-    {{-- Inyectamos los estilos del plugin --}}
-    <link rel="stylesheet" href="{{ asset('css/integraciones.css?v=' . time()) }}">
-    
-    {{-- Permitimos que las vistas inyecten más estilos si lo necesitan --}}
-    @yield('extra_plugin_styles')
-@endsection
+{{-- Extendemos el layout detectado dinámicamente --}}
+@extends($layout)
+
+{{-- 
+    IMPORTANTE: Ya no inyectamos CSS/JS aquí porque ya los pusimos 
+    en admin/layout, user/layout y agent/layout de forma global.
+--}}
 
 @section('content')
     {{-- 
-       El layout de usuario usa @yield('content') dentro de un div .page-inner.
-       Aquí ponemos el yield de tu plugin.
+       Encapsulamos el contenido de las vistas del plugin.
+       Mantenemos el nombre 'contenido_del_plugin' para que todas 
+       tus vistas actuales sigan funcionando sin cambios.
     --}}
     @yield('contenido_del_plugin')
 @endsection
 
 {{-- 
-    Como el layout de usuario no tiene un @yield('scripts'), 
-    usamos la sección 'scripts' que suele estar definida en el partial 
-    o simplemente la definimos para que Laravel la procese.
+    Mantenemos estas secciones por si alguna vista específica 
+    necesita inyectar algo extra (como variables JS o estilos locales)
 --}}
 @section('scripts')
-    <script src="{{ asset('js/integraciones.js?v=' . time()) }}"></script>
     @yield('extra_plugin_scripts')
+@endsection
+
+@section('styles')
+    @yield('extra_plugin_styles')
 @endsection

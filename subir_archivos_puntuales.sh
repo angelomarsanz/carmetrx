@@ -11,5 +11,9 @@
 #   )
 ARCHIVOS_PHP_PUNTUALES=(
         #"Ninguno"
-        "packages/Reda/Integraciones/resources/js/vistas/mercado_libre/importadores/indexImportadores.js"
+        "resources/views/admin/layout.blade.php"
+        "resources/views/user/layout.blade.php"
+        "resources/views/agent/layout.blade.php"
+        "packages/Reda/Integraciones/resources/views/layout_bridge.blade.php"
+        "packages/Reda/Integraciones/resources/views/mercado_libre/importadores/index.blade.php"
 )
