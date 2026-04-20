@@ -8,6 +8,6 @@ class ImportadorController extends Controller
 {
     public function index()
     {
-        return view('integraciones::mercado_libre.importadores.index');
+        return view('reda-integraciones::mercado_libre.importadores.index');
     }
 }

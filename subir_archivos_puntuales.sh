@@ -11,9 +11,9 @@
 #   )
 ARCHIVOS_PHP_PUNTUALES=(
         #"Ninguno"
-        "resources/views/admin/layout.blade.php"
-        "resources/views/user/layout.blade.php"
-        "resources/views/agent/layout.blade.php"
-        "packages/Reda/Integraciones/resources/views/layout_bridge.blade.php"
+        "packages/Reda/Integraciones/config/integraciones.php"
+        "packages/Reda/Integraciones/resources/lang/es.json"
+        "packages/Reda/Integraciones/src/IntegracionesServiceProvider.php"
         "packages/Reda/Integraciones/resources/views/mercado_libre/importadores/index.blade.php"
+        "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ImportadorController.php"
 )
