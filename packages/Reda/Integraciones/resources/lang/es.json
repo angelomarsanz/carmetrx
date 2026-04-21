@@ -1,5 +1,8 @@
 {
-    "Nombre del negocio": "Nombre del negocio",
-    "Publica tu negocio": "Publica tu negocio",
-    "Precio unitario v1": "Precio unitario v.1"
+    "Prueba de integración con Mercado Libre para importar productos": "Prueba de integración con Mercado Libre para importar productos.",
+    "Listado del Importador" : "Listado del Importador",
+    "Mercado Libre" : "Mercado Libre",
+    "Configuración conexión con Mercado Libre" : "Configuración conexión con Mercado Libre",
+    "Importador" : "Importador",
+    "Configuración" : "Configuración"
 }

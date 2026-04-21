@@ -10,10 +10,9 @@
 #       "Ninguno"
 #   )
 ARCHIVOS_PHP_PUNTUALES=(
-        #"Ninguno"
-        "packages/Reda/Integraciones/config/integraciones.php"
-        "packages/Reda/Integraciones/resources/lang/es.json"
-        "packages/Reda/Integraciones/src/IntegracionesServiceProvider.php"
-        "packages/Reda/Integraciones/resources/views/mercado_libre/importadores/index.blade.php"
-        "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ImportadorController.php"
+    #"Ninguno"
+    "packages/Reda/Integraciones/resources/lang/es.json"
+    "packages/Reda/Integraciones/routes/web.php"
+
+    "packages/Reda/Integraciones/resources/js/vistas/mercado_libre/menus/indexMenuLateral.js"
 )

@@ -7,6 +7,8 @@ $(function () {
         // Obtener los slugs de la ruta
         const slugs = path.split('/').filter(slug => slug !== '');
 
+        const iconML = '<i class="fas fa-store"></i>';
+
         // Verificar si el primer slug es "admin" y el segundo slug no es "agent"
         if (slugs[0] === 'admin' && slugs[1] !== 'agent') {
             const propertyCollapse = $('#propertySpecifications');
@@ -14,13 +16,28 @@ $(function () {
                 // Inyectar el elemento en el menú
                 const menuItemHtml = `
                     <li class="nav-item">
-                        <a href="/admin/garantias">
-                            <i class="fas fa-shield-alt"></i>
-                            <p>Garantías</p>
+                        <a data-toggle="collapse" href="#mlMenuAdmin" aria-expanded="false">
+                            ${iconML}
+                            <p>${window.RedaIntegraciones["Mercado Libre"] || "Mercado Libre"}</p>
+                            <b class="caret"></b>
                         </a>
+                        <div class="collapse" id="mlMenuAdmin">
+                            <ul class="nav">
+                                <li>
+                                    <a href="/admin/mercado-libre/importadores">
+                                        <span class="sub-item">${window.RedaIntegraciones["Importador"] || "Importador"}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/admin/mercado-libre/configuraciones">
+                                        <span class="sub-item">${window.RedaIntegraciones["Configuración"] || "Configuración"}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>`;
                 propertyCollapse.closest('li.nav-item').after(menuItemHtml);
-                console.log("Menú de Garantías inyectado correctamente.");
+                console.log("Menú de Mercado Libre inyectado correctamente.");
             }
         }
         // Verificar si el primer slug es "user" y el segundo slug no es "agent"
@@ -30,13 +47,29 @@ $(function () {
                 // Inyectar el elemento en el menú
                 const menuItemHtml = `
                     <li class="nav-item">
-                        <a href="/user/garantias">
-                            <i class="fas fa-shield-alt"></i>
-                            <p>Garantías</p>
+                        <a data-toggle="collapse" href="#mlMenuAdmin" aria-expanded="false">
+                            ${iconML}
+                            <p>${window.RedaIntegraciones["Mercado Libre"] || "Mercado Libre"}</p>
+                            <b class="caret"></b>
                         </a>
+                        <div class="collapse" id="mlMenuAdmin">
+                            <ul class="nav">
+                                <li>
+                                    <a href="/admin/mercado-libre/importadores">
+                                        <span class="sub-item">${window.RedaIntegraciones["Importador"] || "Importador"}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/admin/mercado-libre/configuraciones">
+                                        <span class="sub-item">${window.RedaIntegraciones["Configuración"] || "Configuración"}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>`;
+
                 propertySpecification.closest('li.nav-item').after(menuItemHtml);
-                console.log("Menú de Garantías inyectado correctamente.");
+                console.log("Menú de Mercado Libre inyectado correctamente.");
             }
         }
         // Verificar si el segundo slug es "agent"
@@ -55,15 +88,15 @@ $(function () {
                 const menuItemHtml = `
                     <li class="nav-item">
                         <a href="${href}">
-                            <i class="fas fa-shield-alt"></i>
-                            <p>Garantías</p>
+                            ${iconML}
+                            <p>${window.RedaIntegraciones["Mercado Libre"] || "Mercado Libre"}</p>
                         </a>
                     </li>`;
                 propertyManagement.closest('li.nav-item').after(menuItemHtml);
-                console.log("Menú de Garantías inyectado correctamente.");
+                console.log("Menú de Mercado Libre inyectado correctamente.");
             }
         }
     }
     // Ejecutar al cargar
-    injectMenu();    
+    injectMenu();
 });

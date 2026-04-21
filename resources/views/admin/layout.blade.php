@@ -10,9 +10,10 @@
     <title>{{ $bs->website_title }} - {{ __('Admin') }}</title>
     <link rel="icon" href="{{ asset('assets/front/img/' . $bs->favicon) }}">
     @includeif('admin.partials.styles')
-   
-    {{-- CSS de Integraciones (Global) --}}
-    <link rel="stylesheet" href="{{ asset('css/integraciones.css?v=' . time()) }}"> 
+
+    {{-- Inicio cambios Carmertric --}}
+    <link rel="stylesheet" href="{{ asset('css/integraciones.css?v=' . time()) }}">
+    {{-- Fin cambios Carmertric --}}
 
     @yield('styles')
     @if (!empty($currentLang) && $currentLang->rtl == 1)
@@ -74,12 +75,16 @@
       });
     </script>
 
-     {{-- JS de Integraciones (Global) --}}
-     <script src="{{ asset('js/integraciones.js?v=' . time()) }}"></script>
- 
+    {{-- Inicio cambios Carmertric --}}
+    <script>
+        window.RedaIntegraciones = @json(json_decode(file_get_contents(base_path('packages/Reda/Integraciones/resources/lang/es.json')), true));
+    </script>
+    <script src="{{ asset('js/integraciones.js?v=' . time()) }}"></script>
+    {{-- Fin cambios Carmertric --}}
+
     <div class="request-loader">
         <img src="{{ asset('assets/admin/img/loader.gif') }}" alt="">
-    </div> 
+    </div>
 </body>
 
 </html>

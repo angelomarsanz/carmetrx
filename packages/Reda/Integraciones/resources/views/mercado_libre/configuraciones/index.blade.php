@@ -1,10 +1,10 @@
 @extends('reda-integraciones::layout_bridge')
 
 @section('contenido_del_plugin')
-    <div id='indexImportadoresMercadoLibre'></div>
+    <div id='indexConfiguracionesMercadoLibre'></div>
     <br /><br /><br />
     <div class="alert alert-info">
         Módulo: {{ config('reda-integraciones.module_version') }}
     </div>
-    <p>{{ __('Prueba de integración con Mercado Libre para importar productos') }}</p>
+    <p>{{ __('Configuración conexión con Mercado Libre') }}</p>
 @endsection
