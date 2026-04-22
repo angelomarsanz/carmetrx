@@ -11,8 +11,6 @@
 #   )
 ARCHIVOS_PHP_PUNTUALES=(
     #"Ninguno"
-    "packages/Reda/Integraciones/resources/lang/es.json"
-    "packages/Reda/Integraciones/routes/web.php"
-
     "packages/Reda/Integraciones/resources/js/vistas/mercado_libre/menus/indexMenuLateral.js"
+    "packages/Reda/Integraciones/routes/web.php"
 )

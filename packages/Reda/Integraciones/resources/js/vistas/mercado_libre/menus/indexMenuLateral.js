@@ -22,7 +22,7 @@ $(function () {
                             <b class="caret"></b>
                         </a>
                         <div class="collapse" id="mlMenuAdmin">
-                            <ul class="nav">
+                            <ul class="nav nav-collapse">
                                 <li>
                                     <a href="/admin/mercado-libre/importadores">
                                         <span class="sub-item">${window.RedaIntegraciones["Importador"] || "Importador"}</span>
@@ -47,20 +47,15 @@ $(function () {
                 // Inyectar el elemento en el menú
                 const menuItemHtml = `
                     <li class="nav-item">
-                        <a data-toggle="collapse" href="#mlMenuAdmin" aria-expanded="false">
+                        <a data-toggle="collapse" href="#mlMenuAgencia" aria-expanded="false">
                             ${iconML}
                             <p>${window.RedaIntegraciones["Mercado Libre"] || "Mercado Libre"}</p>
                             <b class="caret"></b>
                         </a>
-                        <div class="collapse" id="mlMenuAdmin">
-                            <ul class="nav">
+                        <div class="collapse" id="mlMenuAgencia">
+                            <ul class="nav nav-collapse">
                                 <li>
-                                    <a href="/admin/mercado-libre/importadores">
-                                        <span class="sub-item">${window.RedaIntegraciones["Importador"] || "Importador"}</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/admin/mercado-libre/configuraciones">
+                                    <a href="/user/mercado-libre/configuraciones">
                                         <span class="sub-item">${window.RedaIntegraciones["Configuración"] || "Configuración"}</span>
                                     </a>
                                 </li>
@@ -81,17 +76,28 @@ $(function () {
                 const secondSlug = slugs[1];
 
                 // Formar el href completo con la ruta base
-                const basePath = 'https://dev2.ofiliaria.com';
-                const href = `${basePath}/${firstSlug}/${secondSlug}/garantias`;
+                const basePath = 'https://dev2.carmetric.net';
+                const href = `${basePath}/${firstSlug}/${secondSlug}/mercado-libre/configuraciones`;
 
                 // Inyectar el elemento en el menú
                 const menuItemHtml = `
                     <li class="nav-item">
-                        <a href="${href}">
+                        <a data-toggle="collapse" href="#mlMenuAgente" aria-expanded="false">
                             ${iconML}
                             <p>${window.RedaIntegraciones["Mercado Libre"] || "Mercado Libre"}</p>
+                            <b class="caret"></b>
                         </a>
+                        <div class="collapse" id="mlMenuAgente">
+                            <ul class="nav nav-collapse">
+                                <li>
+                                    <a href="${href}">
+                                        <span class="sub-item">${window.RedaIntegraciones["Configuración"] || "Configuración"}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>`;
+
                 propertyManagement.closest('li.nav-item').after(menuItemHtml);
                 console.log("Menú de Mercado Libre inyectado correctamente.");
             }

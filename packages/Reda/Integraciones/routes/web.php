@@ -44,8 +44,9 @@ Route::group([
     'prefix' => $prefix,
     'middleware' => ['userMaintenance']
 ], function () use ($domain, $prefix) {
-
     Route::middleware(['frontend.language'])->group(function () use ($domain) {
-        Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.mercado_libre.configuraciones.index');
+        Route::group(['prefix' => 'agent', 'middleware' => ['auth:agent']], function () use ($domain) {
+            Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.mercado_libre.configuraciones.index');
+        });
     });
 });
