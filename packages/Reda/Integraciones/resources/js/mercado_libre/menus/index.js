@@ -1,0 +1,1 @@
+export { indexMenuLateral } from "./indexMenuLateral";

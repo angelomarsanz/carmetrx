@@ -27,15 +27,16 @@ Route::get('test-integraciones', function () {
 Route::domain($domain)->group(function () use ($domain) {
     Route::prefix('admin')->middleware(['adminLang'])->group(function () use ($domain) {
         Route::group(['middleware' => ['auth:admin', 'checkstatus']], function ()  use ($domain) {
-            Route::get('mercado-libre/importadores', [ImportadorController::class, 'index'])->name('reda.mercado_libre.importadores.index');
-            Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.mercado_libre.configuraciones.index');
+            Route::get('general/usuario/verificar', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.admin.usuario.verificar');
+            Route::get('mercado-libre/importadores', [ImportadorController::class, 'index'])->name('reda.integraciones.mercado_libre.admin.importadores.index');
         });
     });
 });
 
 // Rutas para la agencia
 Route::group(['prefix' => 'user', 'middleware' => ['auth:web', 'userstatus', 'TenantDashboardLang']], function () use ($domain) {
-    Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.mercado_libre.configuraciones.index');
+    Route::get('general/usuario/verificar', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.user.usuario.verificar');
+    Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.integraciones.mercado_libre.user.configuraciones.index');
 });
 
 // Rutas para el agente
@@ -46,7 +47,8 @@ Route::group([
 ], function () use ($domain, $prefix) {
     Route::middleware(['frontend.language'])->group(function () use ($domain) {
         Route::group(['prefix' => 'agent', 'middleware' => ['auth:agent']], function () use ($domain) {
-            Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.mercado_libre.configuraciones.index');
+            Route::get('general/usuario/verificar', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.agent.usuario.verificar');
+            Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.integraciones.mercado_libre.agent.configuraciones.index');
         });
     });
 });
