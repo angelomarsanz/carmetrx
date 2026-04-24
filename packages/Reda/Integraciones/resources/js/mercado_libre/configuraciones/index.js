@@ -1,0 +1,1 @@
+export { indexConfiguracionesMercadoLibre } from "./indexConfiguracionesMercadoLibre";
