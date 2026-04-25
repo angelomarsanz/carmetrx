@@ -4,5 +4,11 @@
     "Mercado Libre" : "Mercado Libre",
     "Configuración de la conexión con Mercado Libre" : "Configuración de la conexión con Mercado Libre",
     "Importador" : "Importador",
-    "Configuración" : "Configuración"
+    "Configuración" : "Configuración",
+    "Verificando usuario conectado" : "Verificando usuario conectado",
+    "El usuario con perfil de Administrador no puede configurar conexión con Mercado Libre" : "El usuario con perfil de Administrador no puede configurar conexión con Mercado Libre.",
+    "Usuario verificado correctamente" : "Usuario verificado correctamente",
+    "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre." : "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre.",
+    "Configurar conexión con Mercado Libre" : "Configurar conexión con Mercado Libre",
+    "Error al verificar el usuario conectado" : "Error al verificar el usuario conectado"
 }

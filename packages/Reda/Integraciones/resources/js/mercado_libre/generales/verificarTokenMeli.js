@@ -1,10 +1,10 @@
 import { obtenerOrigenPrefijoBase } from "./obtenerOrigenPrefijoBase.js";
 
-export const verificarTokenMeli = () => {
+export const verificarTokenMeli = (datos_usuario_conectado) => {
     const origenPrefijoBase = obtenerOrigenPrefijoBase();
     const origin = origenPrefijoBase.origin;
     const prefijo = origenPrefijoBase.prefijo;
-    const url = `${origin}${prefijo}/mercado-libre/configuraciones/verificar-token`;
+    const url = `${origin}${prefijo}/mercado-libre/configuraciones/verificar-token-meli`;
     return new Promise((resolve) => {
         (function( $ ) {
         $.ajax({
@@ -14,6 +14,9 @@ export const verificarTokenMeli = () => {
             headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+            data: {
+                'datos_usuario_conectado': datos_usuario_conectado 
+            },
             success: function(data) 
             {
                 let codigo_retorno = data.codigo_respuesta;

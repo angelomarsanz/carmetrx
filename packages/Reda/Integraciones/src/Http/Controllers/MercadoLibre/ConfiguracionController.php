@@ -12,9 +12,12 @@ class ConfiguracionController extends Controller
     }
     public function verificarTokenMeli(Request $request)
     {
+        $datos_usuario_conectado = $request->input('datos_usuario_conectado', ''); 
+    
+            // Aquí iría la lógica real para verificar el token con MercadoLibre usando el prefijo
+            // Por ahora, devolvemos una respuesta simulada para propósitos de prueba
         $respuesta = [
             'codigo_respuesta' => 0,
-            'usuario_duenio_token' => 'Usuario Ejemplo',
             'mensaje_respuesta' => 'Token encontrado exitosamente',
             'token_meli' => 'xdffsfasdfasdf',
             'refresh_token_meli' => 'xdffsfasdfasdf'
