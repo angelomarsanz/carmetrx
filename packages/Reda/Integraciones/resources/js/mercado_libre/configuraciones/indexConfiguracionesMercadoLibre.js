@@ -42,12 +42,6 @@ export const indexConfiguracionesMercadoLibre = () =>
                 </div>
             `;
             
-            var errorVerificandoUsuario = `
-                <div class="alert alert-danger d-flex align-items-center" role="alert">   
-                    <strong>${window.RedaIntegraciones["Error al verificar el usuario conectado"] || "Error al verificar el usuario conectado"}</strong>
-                </div>
-            `;
-
             var conexionMeliVerificadaExitosamente = `
                 <div class="alert alert-success d-flex align-items-center" role="alert">   
                     <strong>${window.RedaIntegraciones["Conexión con Mercado Libre verificada exitosamente"] || "Conexión con Mercado Libre verificada exitosamente"}</strong>
@@ -69,7 +63,7 @@ export const indexConfiguracionesMercadoLibre = () =>
                 $(containerId).html(verificandoUsuarioConectado);
                 const respuestaVerificarUsuarioConectado = await verificarUsuarioConectado();
                 let codigo_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.codigo_respuesta;
-                let mensaje_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.mensaje;
+                let mensaje_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.mensaje_respuesta;
                 if (codigo_respuesta_verificar_usuario == 0)
                 {
                   let rol_usuario_conectado = respuestaVerificarUsuarioConectado.rol_usuario_conectado;
@@ -89,11 +83,11 @@ export const indexConfiguracionesMercadoLibre = () =>
                       tipo_agencia_agente : respuestaVerificarUsuarioConectado.tipo_agencia_agente
                     };
                     const respuestaVerificarToken = await verificarTokenMeli(datos_usuario_conectado);
-                    let codigo_respuesta = respuestaVerificarToken.codigo_respuesta;
-                    let mensaje_respuesta = respuestaVerificarToken.mensaje_respuesta;
+                    let codigo_respuesta_verificar_token = respuestaVerificarToken.codigo_respuesta;
+                    let mensaje_respuesta_verificar_token = respuestaVerificarToken.mensaje_respuesta;
                     token_meli = respuestaVerificarToken.token_meli;
                     refresh_token_meli = respuestaVerificarToken.refresh_token_meli;
-                    if (codigo_respuesta == 0)
+                    if (codigo_respuesta_verificar_token == 0)
                     {
                       $(containerId).html(conexionMeliVerificadaExitosamente);
                       console.log('Token de Mercado Libre: ' + token_meli);
@@ -101,18 +95,44 @@ export const indexConfiguracionesMercadoLibre = () =>
                     }
                     else  
                     {
-                      $(containerId).html(`
-                        <div class="alert alert-warning" role="alert">
-                            ${mensaje_respuesta}
+                      let errorVerificandoTokenMeli = `
+                        <div class="alert alert-danger" role="alert">
+                            <div class="mb-2">
+                              <strong>${window.RedaIntegraciones["No se encontró un token de Mercado Libre válido para el usuario conectado"] || "No se encontró un token de Mercado Libre válido para el usuario conectado."}</strong>
+                            </div>
+                            <div class="small">
+                                <span class="d-block">
+                                    <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${codigo_respuesta_verificar_token}
+                                </span>
+                                <span class="d-block">
+                                    <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${mensaje_respuesta_verificar_token}
+                                </span>
+                            </div>
                         </div>
-                      `);
+                      `;
+                      $(containerId).html(errorVerificandoTokenMeli);
                     }
                   }
                 }
                 else
-                {                  
-                  $(containerId).html(errorVerificandoUsuario);
-                }
+                {      
+                  let errorVerificandoUsuario = `
+                    <div class="alert alert-danger" role="alert">
+                        <div class="mb-2">
+                            <strong>${window.RedaIntegraciones["Error al verificar el usuario conectado"] || "Error al verificar el usuario conectado"}</strong>
+                        </div>
+                        <div class="small">
+                            <span class="d-block">
+                                <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${codigo_respuesta_verificar_usuario}
+                            </span>
+                            <span class="d-block">
+                                <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${mensaje_respuesta_verificar_usuario}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                $(containerId).html(errorVerificandoUsuario);
+              }
             }
 
             $(function() {

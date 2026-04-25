@@ -17,50 +17,35 @@ export const verificarUsuarioConectado = () => {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
             data: {
+                'origin': origin,
                 'prefijo': prefijo 
             },
             success: function(data) 
             {
-                let codigo_respuesta = data.codigo_respuesta;
-                if ( codigo_respuesta == 0) 
-                {
-                    let respuesta = {
-                        codigo_respuesta : codigo_respuesta,
-                        mensaje_respuesta : data.mensaje_respuesta,
-                        id_usuario_administrador_conectado : data.id_usuario_administrador_conectado,
-                        id_usuario_agencia_conectado : data.id_usuario_agencia_conectado,
-                        id_usuario_agente_conectado : data.id_usuario_agente_conectado,
-                        rol_usuario_conectado : data.rol_usuario_conectado,
-                        tipo_agencia_agente : data.tipo_agencia_agente
-                    }
-                    resolve(respuesta);
-                } 
-                else  
-                {
-                    let respuesta = {
-                        codigo_respuesta : codigo_respuesta,
-                        mensaje_respuesta : data.mensaje_respuesta,
-                        id_usuario_administrador_conectado : 0,
-                        id_usuario_agencia_conectado : 0,
-                        id_usuario_agente_conectado : 0,
-                        rol_usuario_conectado : '',
-                        tipo_agencia_agente : ''
-                    }
-                    resolve(respuesta);
+                let respuesta = {
+                    codigo_respuesta : data.codigo_respuesta,
+                    mensaje_respuesta : window.RedaIntegraciones[data.mensaje_respuesta] || data.mensaje_respuesta,
+                    id_usuario_administrador_conectado : data.id_usuario_administrador_conectado,
+                    id_usuario_agencia_conectado : data.id_usuario_agencia_conectado,
+                    id_usuario_agente_conectado : data.id_usuario_agente_conectado,
+                    rol_usuario_conectado : data.rol_usuario_conectado,
+                    tipo_agencia_agente : data.tipo_agencia_agente
                 }
+                resolve(respuesta);
             },
             error: function (x, xs, xt) 
             {
+                console.log('error', JSON.stringify(x));
+                const mensajeErrorBase = window.RedaIntegraciones["Error en el servidor de Carmetric"] || "Error en el servidor de Carmetric";
                 let respuesta = {
-                    codigo_respuesta : 5,
-                    mensaje_respuesta : 'Error en el servidor de Carmetric: ' + xt,
+                    codigo_respuesta : 99,
+                    mensaje_respuesta : `${mensajeErrorBase}. ${xt}`,
                     id_usuario_administrador_conectado : 0,
                     id_usuario_agencia_conectado : 0,
                     id_usuario_agente_conectado : 0,
                     rol_usuario_conectado : '',
                     tipo_agencia_agente : ''
                 }
-                console.log('error', JSON.stringify(x));
                 resolve(respuesta);
             }
         });

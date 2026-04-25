@@ -10,5 +10,16 @@
     "Usuario verificado correctamente" : "Usuario verificado correctamente",
     "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre." : "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre.",
     "Configurar conexión con Mercado Libre" : "Configurar conexión con Mercado Libre",
-    "Error al verificar el usuario conectado" : "Error al verificar el usuario conectado"
+    "Error al verificar el usuario conectado" : "Error al verificar el usuario conectado",
+    "Verificación exitosa" : "Verificación exitosa",
+    "Usuario no autenticado" : "Usuario no autenticado",
+    "Valor inválido para prefijo" : "Valor inválido para prefijo",
+    "El agente no pertenece al tenant actual" : "El agente no pertenece al tenant actual",
+    "No se pudo obtener el tenant actual" : "No se pudo obtener el tenant actual",
+    "Error al obtener el agente: " : "Error al obtener el agente: ",
+    "No se encontró un token de Mercado Libre válido para el usuario conectado" : "No se encontró un token de Mercado Libre válido para el usuario conectado.",
+    "Token encontrado exitosamente" : "Token encontrado exitosamente",
+    "Error en el servidor de Carmetric" : "Error en el servidor de Carmetric",
+    "Código de respuesta" : "Código de respuesta",
+    "Mensaje de respuesta" : "Mensaje de respuesta"
 }

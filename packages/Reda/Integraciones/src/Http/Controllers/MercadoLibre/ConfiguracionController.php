@@ -18,7 +18,7 @@ class ConfiguracionController extends Controller
             // Por ahora, devolvemos una respuesta simulada para propósitos de prueba
         $respuesta = [
             'codigo_respuesta' => 0,
-            'mensaje_respuesta' => 'Token encontrado exitosamente',
+            'mensaje_respuesta' => __('Token encontrado exitosamente'),
             'token_meli' => 'xdffsfasdfasdf',
             'refresh_token_meli' => 'xdffsfasdfasdf'
         ];  
