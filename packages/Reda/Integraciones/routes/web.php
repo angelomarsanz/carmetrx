@@ -37,6 +37,7 @@ Route::domain($domain)->group(function () use ($domain) {
 Route::group(['prefix' => 'user', 'middleware' => ['auth:web', 'userstatus', 'TenantDashboardLang']], function () use ($domain) {
     Route::get('general/usuario/verificar', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.user.usuario.verificar');
     Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.integraciones.mercado_libre.user.configuraciones.index');
+    Route::post('mercado-libre/configuraciones/verificar-token', [ConfiguracionController::class, 'verificarTokenMeli'])->name('reda.integraciones.mercado_libre.user.configuraciones.verificar_token');
 });
 
 // Rutas para el agente
