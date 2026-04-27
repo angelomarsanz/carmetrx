@@ -28,6 +28,7 @@ Route::get('test-integraciones', function () {
 Route::domain($domain)->group(function () use ($domain) {
     Route::prefix('admin')->middleware(['adminLang'])->group(function () use ($domain) {
         Route::group(['middleware' => ['auth:admin', 'checkstatus']], function ()  use ($domain) {
+            Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.integraciones.mercado_libre.admin.configuraciones.index');
             Route::get('general/usuario/verificar-usuario-conectado', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.admin.verificar_usuario_conectado');
             Route::get('mercado-libre/importadores', [ImportadorController::class, 'index'])->name('reda.integraciones.mercado_libre.admin.importadores.index');
         });

@@ -29,6 +29,6 @@ ARCHIVOS_PHP_PUNTUALES=(
     #"packages/Reda/Integraciones/database/migrations/2026_04_26_033505_create_users_melis_table.php"
     #"packages/Reda/Integraciones/src/Models/MercadoLibre/AgentMeli.php"
     #"packages/Reda/Integraciones/database/migrations/2026_04_26_041021_create_agents_melis_table.php"
-    "packages/Reda/Integraciones/src/Models/MercadoLibre/PropiedadMeli.php"
-    "packages/Reda/Integraciones/database/migrations/2026_04_26_221833_create_propiedades_melis_table.php"
+    #"packages/Reda/Integraciones/src/Models/MercadoLibre/PropiedadMeli.php"
+    #"packages/Reda/Integraciones/database/migrations/2026_04_26_221833_create_propiedades_melis_table.php"
 )

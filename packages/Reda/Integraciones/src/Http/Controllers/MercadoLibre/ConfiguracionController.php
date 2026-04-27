@@ -10,12 +10,12 @@ class ConfiguracionController extends Controller
     {
         return view('reda-integraciones::mercado_libre.configuraciones.index');
     }
-    public function verificarTokenMeli(Request $request)
+    public function verificarTokenMeli(Request $request, $datosUsuarioConectado = null)
     {
-        $datos_usuario_conectado = $request->input('datos_usuario_conectado', ''); 
+        if ($datosUsuarioConectado == null) {
+            $datosUsuarioConectado = $request->input('datos_usuario_conectado', ''); 
+        } 
     
-            // Aquí iría la lógica real para verificar el token con MercadoLibre usando el prefijo
-            // Por ahora, devolvemos una respuesta simulada para propósitos de prueba
         $respuesta = [
             'codigo_respuesta' => 0,
             'mensaje_respuesta' => __('Token encontrado exitosamente'),
