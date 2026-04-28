@@ -52,7 +52,6 @@ Route::group([
         Route::group(['prefix' => 'agent', 'middleware' => ['auth:agent']], function () use ($domain) {
             Route::get('general/usuario/verificar-usuario-conectado', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.agent.verificar_usuario_conectado');
             Route::post('mercado-libre/configuraciones/verificar-token-meli', [ConfiguracionController::class, 'verificarTokenMeli'])->name('reda.integraciones.mercado_libre.agent.configuraciones.verificar_token_meli');
-
         });
     });
 });

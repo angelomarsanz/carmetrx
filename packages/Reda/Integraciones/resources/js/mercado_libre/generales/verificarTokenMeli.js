@@ -5,6 +5,8 @@ export const verificarTokenMeli = (datos_usuario_conectado) => {
     const origin = origenPrefijoBase.origin;
     const prefijo = origenPrefijoBase.prefijo;
     const url = `${origin}${prefijo}/mercado-libre/configuraciones/verificar-token-meli`;
+    console.log('url: ' + url);
+    console.log('datos_usuario_conectado: ' + JSON.stringify(datos_usuario_conectado));
     return new Promise((resolve) => {
         (function( $ ) {
         $.ajax({
@@ -15,9 +17,9 @@ export const verificarTokenMeli = (datos_usuario_conectado) => {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
             data: {
-                'datos_usuario_conectado': datos_usuario_conectado 
+                'datos_usuario_conectado': datos_usuario_conectado
             },
-            success: function(data) 
+            success: function(data)
             {
                 let respuesta = {
                     codigo_respuesta : data.codigo_respuesta,
@@ -27,7 +29,7 @@ export const verificarTokenMeli = (datos_usuario_conectado) => {
                 }
                 resolve(respuesta);
             },
-            error: function (x, xs, xt) 
+            error: function (x, xs, xt)
             {
                 console.log('error', JSON.stringify(x));
                 const mensajeErrorBase = window.RedaIntegraciones["Error en el servidor de Carmetric"] || "Error en el servidor de Carmetric";

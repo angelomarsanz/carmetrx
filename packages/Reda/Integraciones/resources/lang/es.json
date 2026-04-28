@@ -21,5 +21,8 @@
     "Token encontrado exitosamente" : "Token encontrado exitosamente",
     "Error en el servidor de Carmetric" : "Error en el servidor de Carmetric",
     "Código de respuesta" : "Código de respuesta",
-    "Mensaje de respuesta" : "Mensaje de respuesta"
+    "Mensaje de respuesta" : "Mensaje de respuesta",
+    "ID de usuario no proporcionado para verificar el token de Mercado Libre" : "ID de usuario no proporcionado para verificar el token de Mercado Libre",
+    "Token recuperado con éxito" : "Token recuperado con éxito",
+    "No se encontró el token de Mercado Libre para este usuario" : "No se encontró el token de Mercado Libre para este usuario"
 }

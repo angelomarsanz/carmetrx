@@ -9,14 +9,14 @@ export const indexConfiguracionesMercadoLibre = () =>
         if ($(containerId).length) {
             console.log('Script para "Index Configuraciones" cargado.');
             var token_meli = "";
-            var refresh_token_meli = ""; 
+            var refresh_token_meli = "";
 
             var gifEspere =
-                `<img src='https://dev-backend.ofiliaria.com/public/imagenes/loading.gif' 
+                `<img src='https://dev-backend.ofiliaria.com/public/imagenes/loading.gif'
                 alt='Por favor espere' style="width: 90px; height: 90px" />`;
 
             var verificandoUsuarioConectado = `
-                <div class="alert alert-info d-flex align-items-center" role="alert">   
+                <div class="alert alert-info d-flex align-items-center" role="alert">
                     <strong>${window.RedaIntegraciones["Verificando usuario conectado"] || "Verificando usuario conectado"}</strong>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -25,31 +25,31 @@ export const indexConfiguracionesMercadoLibre = () =>
             `;
 
             var usuarioAdministradorNoConfiguraMeli = `
-                <div class="alert alert-warning d-flex align-items-center" role="alert">   
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
                     <strong>${window.RedaIntegraciones["El usuario con perfil de Administrador no puede configurar conexión con Mercado Libre"] || "El usuario con perfil de Administrador no puede configurar conexión con Mercado Libre."}</strong>
                 </div>
             `;
 
             var usuarioVerificadoCorrectamente = `
-                <div class="alert alert-success d-flex align-items-center" role="alert">   
+                <div class="alert alert-success d-flex align-items-center" role="alert">
                     <strong>${window.RedaIntegraciones["Usuario verificado correctamente"] || "Usuario verificado correctamente"}</strong>
                 </div>
-                <div class="alert alert-info d-flex align-items-center" role="alert">   
+                <div class="alert alert-info d-flex align-items-center" role="alert">
                     <strong>${window.RedaIntegraciones["Verificando token de Mercado Libre"] || "Verificando token de Mercado Libre"}</strong>
                 </div>
                 <div class="d-flex justify-content-center">
                     ${gifEspere}
                 </div>
             `;
-            
+
             var conexionMeliVerificadaExitosamente = `
-                <div class="alert alert-success d-flex align-items-center" role="alert">   
+                <div class="alert alert-success d-flex align-items-center" role="alert">
                     <strong>${window.RedaIntegraciones["Conexión con Mercado Libre verificada exitosamente"] || "Conexión con Mercado Libre verificada exitosamente"}</strong>
                 </div>
             `;
-            
+
             var configurarConexionMeli = `
-                <div class="alert alert-warning d-flex align-items-center" role="alert">   
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
                     <strong>${window.RedaIntegraciones["No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre."] || "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre."}</strong>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -93,7 +93,7 @@ export const indexConfiguracionesMercadoLibre = () =>
                       console.log('Token de Mercado Libre: ' + token_meli);
                       console.log('Refresh Token de Mercado Libre: ' + refresh_token_meli);
                     }
-                    else  
+                    else
                     {
                       let errorVerificandoTokenMeli = `
                         <div class="alert alert-danger" role="alert">
@@ -115,7 +115,7 @@ export const indexConfiguracionesMercadoLibre = () =>
                   }
                 }
                 else
-                {      
+                {
                   let errorVerificandoUsuario = `
                     <div class="alert alert-danger" role="alert">
                         <div class="mb-2">
@@ -145,7 +145,7 @@ export const indexConfiguracionesMercadoLibre = () =>
               {
                   console.log('indexMercadoLibre, ir a buscarTokenBaseDatos');
                   buscarTokenBaseDatos();
-              }  
+              }
             });
         }
     })(jQuery);
