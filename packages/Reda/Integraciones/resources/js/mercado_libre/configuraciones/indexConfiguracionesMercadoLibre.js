@@ -76,9 +76,10 @@ export const indexConfiguracionesMercadoLibre = () =>
                   {
                     $(containerId).html(usuarioVerificadoCorrectamente);
                     let datos_usuario_conectado = {
-                      id_usuario_administrador_conectado : respuestaVerificarUsuarioConectado.id_usuario_administrador_conectado,
-                      id_usuario_agencia_conectado : respuestaVerificarUsuarioConectado.id_usuario_agencia_conectado,
-                      id_usuario_agente_conectado : respuestaVerificarUsuarioConectado.id_usuario_agente_conectado,
+                      id_usuario_administrador : respuestaVerificarUsuarioConectado.id_usuario_administrador,
+                      id_usuario_agencia : respuestaVerificarUsuarioConectado.id_usuario_agencia,
+                      id_usuario_agente : respuestaVerificarUsuarioConectado.id_usuario_agente,
+                      id_usuario_conectado : respuestaVerificarUsuarioConectado.id_usuario_conectado,
                       rol_usuario_conectado : respuestaVerificarUsuarioConectado.rol_usuario_conectado,
                       tipo_agencia_agente : respuestaVerificarUsuarioConectado.tipo_agencia_agente
                     };

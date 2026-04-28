@@ -5,8 +5,8 @@ export const verificarTokenMeli = (datos_usuario_conectado) => {
     const origin = origenPrefijoBase.origin;
     const prefijo = origenPrefijoBase.prefijo;
     const url = `${origin}${prefijo}/mercado-libre/configuraciones/verificar-token-meli`;
-    console.log('url: ' + url);
-    console.log('datos_usuario_conectado: ' + JSON.stringify(datos_usuario_conectado));
+    console.log('url', url);
+    console.log('datos_usuario_conectado', datos_usuario_conectado);
     return new Promise((resolve) => {
         (function( $ ) {
         $.ajax({

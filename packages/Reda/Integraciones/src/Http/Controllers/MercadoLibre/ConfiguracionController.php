@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Reda\Integraciones\Models\MercadoLibre\UserMeli;
 use Illuminate\Support\Facades\Log;
+use Reda\Integraciones\Http\Controllers\General\UsuarioController;
 
 class ConfiguracionController extends Controller
 {
@@ -13,17 +14,21 @@ class ConfiguracionController extends Controller
         return view('reda-integraciones::mercado_libre.configuraciones.index');
     }
 
-    public function verificarTokenMeli(Request $request, $datosUsuarioConectado = null)
+    public function verificarTokenMeli(Request $request, $datosUsuarioConectado = null, $retornaArray = false)
     {
-        $indicadorAjax = 0;
         if ($datosUsuarioConectado == null) {
-            $indicadorAjax = 1;
             $datosUsuarioConectado = $request->input('datos_usuario_conectado');
+            Log::info("Contenido de datosUsuarioConectado: " . print_r($datosUsuarioConectado, true));
         }
 
-        Log::info("Contenido de datosUsuarioConectado: " . print_r($datosUsuarioConectado, true));
+        $respuesta = [
+            'codigo_respuesta' => 0,
+            'mensaje_respuesta' => '',
+            'token_meli' => '',
+            'refresh_token_meli' => ''
+        ];
 
-        $userId = $datosUsuarioConectado['id_usuario_agencia_conectado'] ?? null;
+        $userId = $datosUsuarioConectado['id_usuario_agencia'] ?? null;
 
         if (!$userId) {
             $respuesta = [
@@ -53,6 +58,14 @@ class ConfiguracionController extends Controller
                         'refresh_token_meli' => $datos['refresh_token_meli'],
                     ];
                 }
+                else {
+                    $respuesta = [
+                        'codigo_respuesta' => 2,
+                        'mensaje_respuesta' => __('No se encontró el token de Mercado Libre para este usuario'),
+                        'token_meli' => '',
+                        'refresh_token_meli' => ''
+                    ];
+                }
             }
             else {
                 $respuesta = [
@@ -63,9 +76,32 @@ class ConfiguracionController extends Controller
                 ];
             }
         }
-        if ($indicadorAjax) {
+
+        if (isset($datosUsuarioConectado['id_usuario_conectado']) && $datosUsuarioConectado['id_usuario_conectado'] != 0)
+        {
+            if (isset($datosUsuarioConectado['tipo_agencia_agente']) && $datosUsuarioConectado['tipo_agencia_agente'] != '')
+            {
+                $vectorAtributosDatosMeli = [
+                    'codigo_respuesta_verificar_token_meli' => $respuesta['codigo_respuesta'],
+                    'mensaje_respuesta_verificar_token_meli' => $respuesta['mensaje_respuesta'],
+                    'fecha_hora_verificar_token_meli' => $this->fechaHoraActual()
+                ];
+
+                (new UsuarioController())->actualizarDatosMeliUsuario($vectorAtributosDatosMeli, $datosUsuarioConectado['id_usuario_conectado'], $datosUsuarioConectado['tipo_agencia_agente']);
+            }
+        }
+
+        if ($retornaArray) {
+            return $respuesta;
+        }
+        else {
             return response()->json($respuesta, 200);
         }
-        return $respuesta;
+    }
+    public function fechaHoraActual()
+    {
+		setlocale(LC_TIME, 'es_UY', 'es_UY.UTF-8', 'es_UY.UTF-8');
+		date_default_timezone_set('America/Montevideo');
+		return $fechaHoraActual = date("Y-m-d H:i:s");
     }
 }

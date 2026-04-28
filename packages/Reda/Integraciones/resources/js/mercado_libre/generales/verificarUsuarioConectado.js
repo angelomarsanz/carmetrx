@@ -18,31 +18,33 @@ export const verificarUsuarioConectado = () => {
                 },
             data: {
                 'origin': origin,
-                'prefijo': prefijo 
+                'prefijo': prefijo
             },
-            success: function(data) 
+            success: function(data)
             {
                 let respuesta = {
                     codigo_respuesta : data.codigo_respuesta,
                     mensaje_respuesta : window.RedaIntegraciones[data.mensaje_respuesta] || data.mensaje_respuesta,
-                    id_usuario_administrador_conectado : data.id_usuario_administrador_conectado,
-                    id_usuario_agencia_conectado : data.id_usuario_agencia_conectado,
-                    id_usuario_agente_conectado : data.id_usuario_agente_conectado,
+                    id_usuario_administrador : data.id_usuario_administrador,
+                    id_usuario_agencia : data.id_usuario_agencia,
+                    id_usuario_agente : data.id_usuario_agente,
+                    id_usuario_conectado : data.id_usuario_conectado,
                     rol_usuario_conectado : data.rol_usuario_conectado,
                     tipo_agencia_agente : data.tipo_agencia_agente
                 }
                 resolve(respuesta);
             },
-            error: function (x, xs, xt) 
+            error: function (x, xs, xt)
             {
                 console.log('error', JSON.stringify(x));
                 const mensajeErrorBase = window.RedaIntegraciones["Error en el servidor de Carmetric"] || "Error en el servidor de Carmetric";
                 let respuesta = {
                     codigo_respuesta : 99,
                     mensaje_respuesta : `${mensajeErrorBase}. ${xt}`,
-                    id_usuario_administrador_conectado : 0,
-                    id_usuario_agencia_conectado : 0,
-                    id_usuario_agente_conectado : 0,
+                    id_usuario_administrador : 0,
+                    id_usuario_agencia : 0,
+                    id_usuario_agente : 0,
+                    id_usuario_conectado : 0,
                     rol_usuario_conectado : '',
                     tipo_agencia_agente : ''
                 }
