@@ -40,6 +40,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:web', 'userstatus', 'Te
     Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.integraciones.mercado_libre.user.configuraciones.index');
     Route::get('general/usuario/verificar-usuario-conectado', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.user.verificar_usuario_conectado');
     Route::post('mercado-libre/configuraciones/verificar-token-meli', [ConfiguracionController::class, 'verificarTokenMeli'])->name('reda.integraciones.mercado_libre.user.configuraciones.verificar_token_meli');
+    Route::post('mercado-libre/configuraciones/obtener-token-meli', [ConfiguracionController::class, 'obtenerTokenMeli'])->name('reda.integraciones.mercado_libre.user.configuraciones.obtener_token_meli');
+
 });
 
 // Rutas para el agente

@@ -1,13 +1,15 @@
 import { verificarUsuarioConectado } from "../generales/verificarUsuarioConectado";
 import { verificarTokenMeli } from "../generales/verificarTokenMeli";
 
-export const indexConfiguracionesMercadoLibre = () =>
-{
-    (function( $ ) {
+export const indexConfiguracionesMercadoLibre = () => {
+    (function ($) {
         "use strict";
         const containerId = '#indexConfiguracionesMercadoLibre';
         if ($(containerId).length) {
             console.log('Script para "Index Configuraciones" cargado.');
+            var client_id_meli = $(containerId).data('client-id-meli');
+            const origin = window.location.origin;
+            var url_meli = origin + '/user/mercado-libre/configuraciones'
             var token_meli = "";
             var refresh_token_meli = "";
 
@@ -53,50 +55,65 @@ export const indexConfiguracionesMercadoLibre = () =>
                     <strong>${window.RedaIntegraciones["No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre."] || "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre."}</strong>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <a href="/mercado-libre/configuraciones/solicitar-token" class="btn btn-primary">
+                    <a href="#" id="opcion_configurar_conexion_meli" class="btn btn-primary">
                         ${window.RedaIntegraciones["Configurar conexión con Mercado Libre"] || "Configurar conexión con Mercado Libre"}
                     </a>
                 </div>
             `;
+
+            async function solicitarTokenML() {
+                const respuestaObtenerTokenMeli = await obtenerTokenMeli($("#codigo_temporal").val());
+                if (respuestaObtenerTokenMeli.codigo_respuesta == 0)
+                {
+                    token_meli = respuestaObtenerTokenMeli.token_meli;
+                    refresh_token_meli = respuestaObtenerTokenMeli.refresh_token_meli;
+                    guardarTokenMeli('obtener', token_meli, refresh_token_meli, ajaxurl, 0);
+                    console.log('indexMercadoLibre, solicitarTokenML, token_meli', token_meli);
+                    console.log('indexMercadoLibre, solicitarTokenML, refresh_token_meli', refresh_token_meli);
+                }
+                else
+                {
+                    $("#configuracion_conexion_meli").text("Estimado usuario no se pudo obtener su token de Mercado Libre");
+                    ejecutarErrorTokenMeli(respuestaObtenerTokenMeli.error, respuestaObtenerTokenMeli.mensaje_error);
+                }
+            }
 
             async function buscarTokenBaseDatos() {
                 $(containerId).html(verificandoUsuarioConectado);
                 const respuestaVerificarUsuarioConectado = await verificarUsuarioConectado();
                 let codigo_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.codigo_respuesta;
                 let mensaje_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.mensaje_respuesta;
-                if (codigo_respuesta_verificar_usuario == 0)
-                {
-                  let rol_usuario_conectado = respuestaVerificarUsuarioConectado.rol_usuario_conectado;
-                  if (rol_usuario_conectado == 'admin')
-                  {
-                    $(containerId).html(usuarioAdministradorNoConfiguraMeli);
-                    return;
-                  }
-                  else
-                  {
-                    $(containerId).html(usuarioVerificadoCorrectamente);
-                    let datos_usuario_conectado = {
-                      id_usuario_administrador : respuestaVerificarUsuarioConectado.id_usuario_administrador,
-                      id_usuario_agencia : respuestaVerificarUsuarioConectado.id_usuario_agencia,
-                      id_usuario_agente : respuestaVerificarUsuarioConectado.id_usuario_agente,
-                      id_usuario_conectado : respuestaVerificarUsuarioConectado.id_usuario_conectado,
-                      rol_usuario_conectado : respuestaVerificarUsuarioConectado.rol_usuario_conectado,
-                      tipo_agencia_agente : respuestaVerificarUsuarioConectado.tipo_agencia_agente
-                    };
-                    const respuestaVerificarToken = await verificarTokenMeli(datos_usuario_conectado);
-                    let codigo_respuesta_verificar_token = respuestaVerificarToken.codigo_respuesta;
-                    let mensaje_respuesta_verificar_token = respuestaVerificarToken.mensaje_respuesta;
-                    token_meli = respuestaVerificarToken.token_meli;
-                    refresh_token_meli = respuestaVerificarToken.refresh_token_meli;
-                    if (codigo_respuesta_verificar_token == 0)
-                    {
-                      $(containerId).html(conexionMeliVerificadaExitosamente);
-                      console.log('Token de Mercado Libre: ' + token_meli);
-                      console.log('Refresh Token de Mercado Libre: ' + refresh_token_meli);
+                if (codigo_respuesta_verificar_usuario == 0) {
+                    let rol_usuario_conectado = respuestaVerificarUsuarioConectado.rol_usuario_conectado;
+                    if (rol_usuario_conectado == 'admin') {
+                        $(containerId).html(usuarioAdministradorNoConfiguraMeli);
+                        return;
                     }
-                    else
-                    {
-                      let errorVerificandoTokenMeli = `
+                    else {
+                        $(containerId).html(usuarioVerificadoCorrectamente);
+                        let datos_usuario_conectado = {
+                            id_usuario_administrador: respuestaVerificarUsuarioConectado.id_usuario_administrador,
+                            id_usuario_agencia: respuestaVerificarUsuarioConectado.id_usuario_agencia,
+                            id_usuario_agente: respuestaVerificarUsuarioConectado.id_usuario_agente,
+                            id_usuario_conectado: respuestaVerificarUsuarioConectado.id_usuario_conectado,
+                            rol_usuario_conectado: respuestaVerificarUsuarioConectado.rol_usuario_conectado,
+                            tipo_agencia_agente: respuestaVerificarUsuarioConectado.tipo_agencia_agente
+                        };
+                        const respuestaVerificarToken = await verificarTokenMeli(datos_usuario_conectado);
+                        let codigo_respuesta_verificar_token = respuestaVerificarToken.codigo_respuesta;
+                        let mensaje_respuesta_verificar_token = respuestaVerificarToken.mensaje_respuesta;
+                        token_meli = respuestaVerificarToken.token_meli;
+                        refresh_token_meli = respuestaVerificarToken.refresh_token_meli;
+                        if (codigo_respuesta_verificar_token == 0) {
+                            $(containerId).html(conexionMeliVerificadaExitosamente);
+                            console.log('Token de Mercado Libre: ' + token_meli);
+                            console.log('Refresh Token de Mercado Libre: ' + refresh_token_meli);
+                        }
+                        else if (codigo_respuesta_verificar_token == 2) {
+                            $(containerId).html(configurarConexionMeli);
+                        }
+                        else {
+                            let errorVerificandoTokenMeli = `
                         <div class="alert alert-danger" role="alert">
                             <div class="mb-2">
                               <strong>${window.RedaIntegraciones["No se encontró un token de Mercado Libre válido para el usuario conectado"] || "No se encontró un token de Mercado Libre válido para el usuario conectado."}</strong>
@@ -111,13 +128,12 @@ export const indexConfiguracionesMercadoLibre = () =>
                             </div>
                         </div>
                       `;
-                      $(containerId).html(errorVerificandoTokenMeli);
+                            $(containerId).html(errorVerificandoTokenMeli);
+                        }
                     }
-                  }
                 }
-                else
-                {
-                  let errorVerificandoUsuario = `
+                else {
+                    let errorVerificandoUsuario = `
                     <div class="alert alert-danger" role="alert">
                         <div class="mb-2">
                             <strong>${window.RedaIntegraciones["Error al verificar el usuario conectado"] || "Error al verificar el usuario conectado"}</strong>
@@ -132,21 +148,25 @@ export const indexConfiguracionesMercadoLibre = () =>
                         </div>
                     </div>
                 `;
-                $(containerId).html(errorVerificandoUsuario);
-              }
+                    $(containerId).html(errorVerificandoUsuario);
+                }
             }
 
-            $(function() {
-              if ($("#codigo_temporal").val() != "error")
-              {
-                  console.log('indexMercadoLibre, ir a solicitarTokenML');
-                  solicitarTokenML();
-              }
-              else
-              {
-                  console.log('indexMercadoLibre, ir a buscarTokenBaseDatos');
-                  buscarTokenBaseDatos();
-              }
+            $(function () {
+                if ($("#codigo_temporal").val() != "error") {
+                    console.log('indexMercadoLibre, ir a solicitarTokenML');
+                    solicitarTokenML();
+                }
+                else {
+                    console.log('indexMercadoLibre, ir a buscarTokenBaseDatos');
+                    buscarTokenBaseDatos();
+                }
+                $(containerId).on('click', '#opcion_configurar_conexion_meli', function (event) {
+                    event.preventDefault();
+                    // Redirección a Mercado Libre
+                    const authUrl = `https://auth.mercadolibre.com.uy/authorization?response_type=code&client_id=${client_id_meli}&redirect_uri=${url_meli}`;
+                    window.location.href = authUrl;
+                });
             });
         }
     })(jQuery);

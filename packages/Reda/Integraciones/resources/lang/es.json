@@ -24,5 +24,9 @@
     "Mensaje de respuesta" : "Mensaje de respuesta",
     "ID de usuario no proporcionado para verificar el token de Mercado Libre" : "ID de usuario no proporcionado para verificar el token de Mercado Libre",
     "Token recuperado con éxito" : "Token recuperado con éxito",
-    "No se encontró el token de Mercado Libre para este usuario" : "No se encontró el token de Mercado Libre para este usuario"
+    "No se encontró el token de Mercado Libre para este usuario" : "No se encontró el token de Mercado Libre para este usuario",
+    "Token de acceso no proporcionado" : "Token de acceso no proporcionado",
+    "Proceso exitoso" : "Proceso exitoso",
+    "Mercado Libre retornó un error" : "Mercado Libre retornó un error",
+    "Error de conexión con Mercado Libre: " : "Error de conexión con Mercado Libre: "
 }

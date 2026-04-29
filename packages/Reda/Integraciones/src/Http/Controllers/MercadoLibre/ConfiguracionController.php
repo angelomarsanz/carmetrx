@@ -6,12 +6,17 @@ use Illuminate\Http\Request;
 use Reda\Integraciones\Models\MercadoLibre\UserMeli;
 use Illuminate\Support\Facades\Log;
 use Reda\Integraciones\Http\Controllers\General\UsuarioController;
+use Reda\Integraciones\Traits\MercadoLibre\MeliRequestsTrait;
 
 class ConfiguracionController extends Controller
 {
+    use MeliRequestsTrait;
+    
     public function index()
     {
-        return view('reda-integraciones::mercado_libre.configuraciones.index');
+        $clientIdMeli = env('CLIENT_ID_MELI');
+
+        return view('reda-integraciones::mercado_libre.configuraciones.index', compact('clientIdMeli'));
     }
 
     public function verificarTokenMeli(Request $request, $datosUsuarioConectado = null, $retornaArray = false)
@@ -98,6 +103,41 @@ class ConfiguracionController extends Controller
             return response()->json($respuesta, 200);
         }
     }
+    public function obtenerTokenMeli(Request $request, $codigoTemporal = null, $retornaArray = false)
+    {
+        $datos = [
+            'grant_type'    => 'authorization_code',
+            'client_id'     => env('client_id_meli'),
+            'client_secret' => env('client_secret_meli'),
+            'code'          => $codigoTemporal,
+            'redirect_uri'  => url('/user/mercado-libre/configuraciones')
+        ];
+
+        // Llamamos a la función genérica activando el flag $es_oauth
+        $resultado = $this->enviar_solicitud_meli('oauth/token', 'POST', $datos, false, null, true);
+
+        if ($resultado['success']) {
+            return $resultado['respuesta']; // Aquí vienen access_token y refresh_token
+        }
+
+        return $resultado; // Manejar el error
+    }
+
+    public function refrescarToken($refreshToken)
+    {
+        $datos = [
+            'grant_type'    => 'refresh_token',
+            'client_id'     => env('client_id_meli'),
+            'client_secret' => env('client_secret_meli'),
+            'refresh_token' => $refreshToken
+        ];
+
+        // Usamos el flag $es_oauth = true
+        $resultado = $this->enviar_solicitud_meli('oauth/token', 'POST', $datos, false, null, true);
+
+        return $resultado;
+    }
+
     public function fechaHoraActual()
     {
 		setlocale(LC_TIME, 'es_UY', 'es_UY.UTF-8', 'es_UY.UTF-8');
