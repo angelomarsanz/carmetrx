@@ -9,7 +9,7 @@ trait MeliRequestsTrait
     /**
      * Función genérica mejorada para capturar errores de validación de Mercado Libre.
      */
-    protected function enviar_solicitud_meli($punto_final, $metodo = 'GET', $datos = [], $requiere_autenticacion = false, $token_acceso = null, $es_oauth = false)
+    protected function enviarSolicitudMeli($punto_final, $metodo = 'GET', $datos = [], $requiere_autenticacion = false, $token_acceso = null, $es_oauth = false)
     {
         $url_base = 'https://api.mercadolibre.com/';
         $url_completa = $url_base . ltrim($punto_final, '/');
@@ -27,6 +27,9 @@ trait MeliRequestsTrait
                     'codigo_respuesta' => 1,
                     'codigo_http' => 401,
                     'mensaje_respuesta' => __('Token de acceso no proporcionado'),
+                    'respuesta' => '',
+                    'error_curl' => '',
+                    'causas' => ''
                 ];
             }
             $encabezados[] = 'Authorization: Bearer ' . $token_acceso;
@@ -62,7 +65,9 @@ trait MeliRequestsTrait
                 'codigo_http' => $codigo_http,
                 'mensaje_respuesta' => __('Proceso exitoso'),
                 'respuesta' => $respuesta_decodificada ?: $respuesta_raw,
-                'error_curl' => $error_curl
+                'error_curl' => $error_curl,
+                'causas' => ''
+
             ];
         }
 

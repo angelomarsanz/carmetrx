@@ -19,24 +19,24 @@ export const obtenerTokenMeli = (codigo_temporal) => {
             },
             success: function(data)
             {
-                let respuesta = {
-                    codigo_respuesta : data.codigo_respuesta,
-                    mensaje_respuesta : window.RedaIntegraciones[data.mensaje_respuesta] || data.mensaje_respuesta,
-                    token_meli : data.token_meli,
-                    refresh_token_meli : data.refresh_token_meli,
-                }
-                resolve(respuesta);
+                resolve(data);
             },
             error: function (x, xs, xt)
             {
                 console.log('error', JSON.stringify(x));
+
+                // Si x.status es 0, significa que no hubo respuesta del servidor (error de red)
+                const statusCode = x.status !== 0 ? x.status : 504;
                 const mensajeErrorBase = window.RedaIntegraciones["Error en el servidor de Carmetric"] || "Error en el servidor de Carmetric";
                 let respuesta = {
-                    codigo_respuesta : 99,
-                    mensaje_respuesta : `${mensajeErrorBase}. ${xt}`,
-                    token_meli : '',
-                    refresh_token_meli : ''
-                }
+                    'success' : false,
+                    'codigo_respuesta' : 99,
+                    'codigo_http' : statusCode,
+                    'mensaje_respuesta' : `${mensajeErrorBase}. ${xt}`,,
+                    'respuesta' : '',
+                    'error_curl' : '',
+                    'causas' : ''
+                    }
                 resolve(respuesta);
             }
         });

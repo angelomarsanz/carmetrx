@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 // Importas el modelo original de Laravel, no necesitas crear uno nuevo
 use App\Models\User;
 use App\Models\User\Agent\Agent;
+use Reda\Integraciones\Models\MercadoLibre\AdminMeli;
 use Reda\Integraciones\Models\MercadoLibre\UserMeli;
+use Reda\Integraciones\Models\MercadoLibre\AgentMeli;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Reda\Integraciones\Http\Controllers\MercadoLibre\ConfiguracionController;
@@ -18,7 +20,7 @@ class UsuarioController extends Controller
      * @param Request $request
      * @return array ['origin' => ..., 'prefijo' => ...]
      */
-    public function obtenerOrigenPrefijoBasePHP(Request $request)
+    public function obtenerOrigenPrefijoBase(Request $request)
     {
         // Obtener el path y el host
         $path = $request->getPathInfo();
@@ -63,7 +65,7 @@ class UsuarioController extends Controller
             $origin = $request->input('origin');
             $prefijo = $request->input('prefijo');
         } else {
-            $origenPrefijo = self::obtenerOrigenPrefijoBasePHP($request);
+            $origenPrefijo = self::obtenerOrigenPrefijoBase($request);
             $origin = $origenPrefijo['origin'];
             $prefijo = $origenPrefijo['prefijo'];
         }
@@ -225,12 +227,11 @@ class UsuarioController extends Controller
             ];
         }
     }
-    public function actualizarDatosMeliUsuario($vectorAtributos = [], $idUsuarioConectado = null, $tipoUsuario = null)
+    public function actualizarDatosMeliUsuario($vectorAtributos = [], $idUsuario = null, $tipoUsuario = null)
     {
         try {
             // 1. Verificación de parámetros obligatorios
-            if (empty($idUsuarioConectado)) {
-                Log::error("[Carmetric] Intento de actualización sin ID de usuario.");
+            if (empty($idUsuario)) {
                 return [
                     'codigo_respuesta' => 1,
                     'mensaje_respuesta' => 'Error: El ID del usuario es obligatorio.'
@@ -246,7 +247,7 @@ class UsuarioController extends Controller
 
             // 2. Buscamos el registro o creamos una instancia nueva si no existe
             // firstOrNew busca por user_id; si no lo halla, prepara un objeto nuevo con ese user_id
-            $userMeli = UserMeli::firstOrNew(['user_id' => $idUsuarioConectado]);
+            $userMeli = UserMeli::firstOrNew(['user_id' => $idUsuario]);
 
             // 3. Lógica de actualización del JSON
             // Gracias al cast 'array' en el modelo, $userMeli->datos_meli ya es un vector PHP
@@ -259,8 +260,6 @@ class UsuarioController extends Controller
             $userMeli->datos_meli = $datosActualizados;
             $userMeli->save();
 
-            Log::info("[Carmetric] Columna datos_meli actualizada con éxito para usuario ID: " . $idUsuarioConectado);
-
             return [
                 'codigo_respuesta' => 0,
                 'mensaje_respuesta' => 'Atributos actualizados correctamente.',
@@ -268,7 +267,6 @@ class UsuarioController extends Controller
             ];
 
         } catch (\Exception $e) {
-            Log::error("[Carmetric] Error crítico en actualizarDatosMeliUsuario: " . $e->getMessage());
             return [
                 'codigo_respuesta' => 2,
                 'mensaje_respuesta' => 'Error interno al procesar la actualización.'

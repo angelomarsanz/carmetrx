@@ -15,10 +15,8 @@ ARCHIVOS_PHP_PUNTUALES=(
     "packages/Reda/Integraciones/routes/web.php"
     "packages/Reda/Integraciones/resources/views/mercado_libre/configuraciones/index.blade.php"
     "packages/Reda/Integraciones/resources/js/mercado_libre/configuraciones/indexConfiguracionesMercadoLibre.js"
-    #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarUsuarioConectado.js"
-    #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarTokenMeli.js"
+    "packages/Reda/Integraciones/resources/js/mercado_libre/generales/index.js"
     "packages/Reda/Integraciones/resources/js/mercado_libre/generales/obtenerTokenMeli.js"
     "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ConfiguracionController.php"
-    #"packages/Reda/Integraciones/src/Http/Controllers/General/UsuarioController.php"
     "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
 )

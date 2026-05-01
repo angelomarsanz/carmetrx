@@ -11,7 +11,7 @@ use Reda\Integraciones\Traits\MercadoLibre\MeliRequestsTrait;
 class ConfiguracionController extends Controller
 {
     use MeliRequestsTrait;
-    
+
     public function index()
     {
         $clientIdMeli = env('CLIENT_ID_MELI');
@@ -105,6 +105,11 @@ class ConfiguracionController extends Controller
     }
     public function obtenerTokenMeli(Request $request, $codigoTemporal = null, $retornaArray = false)
     {
+        $respuesta = [];
+        if ($codigoTemporal == null)
+        {
+            $codigoTemporal = $request->input('codigo_temporal');
+        }
         $datos = [
             'grant_type'    => 'authorization_code',
             'client_id'     => env('client_id_meli'),
@@ -114,13 +119,23 @@ class ConfiguracionController extends Controller
         ];
 
         // Llamamos a la función genérica activando el flag $es_oauth
-        $resultado = $this->enviar_solicitud_meli('oauth/token', 'POST', $datos, false, null, true);
+        $respuestaEnviarSolicitudMeli = $this->enviarSolicitudMeli('oauth/token', 'POST', $datos, false, null, true);
 
-        if ($resultado['success']) {
-            return $resultado['respuesta']; // Aquí vienen access_token y refresh_token
+        if ($respuestaEnviarSolicitudMeli['success']) {
+            //
         }
-
-        return $resultado; // Manejar el error
+        else
+        {
+            $respuesta = $respuestEnviarSolicitudMeli;
+        }
+        if ($retornaArray)
+        {
+            return $respuesta;
+        }
+        else
+        {
+            return response()->json($respuesta, $respuestaEnviarSolicitudMeli['codigo_http']);
+        }
     }
 
     public function refrescarToken($refreshToken)
@@ -137,6 +152,42 @@ class ConfiguracionController extends Controller
 
         return $resultado;
     }
+
+	public function guardarTokenMeli(Request $request, $tokenMeli = null, $refreshTokenMeli = null, $retornaArray = false)
+	{
+        $respuestaVerificarUsuarioConectado = (new UsuarioController())->verificarUsuarioConectado(true);
+        $idUsuarioAgencia = $respuestaVerificarUsuarioConectado['id_usuario_agencia'];
+
+        if ($tokenMeli == null)
+        {
+            $tokenMeli = $request->input('token_meli');
+            $refreshTokenMeli = $request->input('refresh_token_meli');
+        }
+
+        $vectorAtributos = [
+            'token_meli' => $tokenMeli,
+            'refresh_token_meli' => $refreshTokenMeli,
+            'fecha_hora_token_meli' => $this->fechaHoraActual()
+        ];
+
+        $respuestaActualizarDatosMeliUsuario = (new UsuarioController())->actualizarDatosMeliUsuario($vectorAtributos, $idUsuarioAgencia, 'estate_agency');
+
+		$respuesta =
+			[
+				'codigo_respuesta' => $respuestaActualizarDatosMeliUsuario['codigo_respuesta'],
+                'mensaje_respuesta' => $respuestaActualizarDatosMeliUsuario['mensaje_respuesta']
+			];
+
+		if ($retornaArray == true)
+		{
+			return $respuesta;
+		}
+		else
+		{
+			echo json_encode($respuesta);
+			die;
+		}
+	}
 
     public function fechaHoraActual()
     {

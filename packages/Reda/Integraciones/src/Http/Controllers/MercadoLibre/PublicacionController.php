@@ -15,7 +15,7 @@ class PublicacionController extends Controller
     }
     public function replicarPublicacionMeli()
     {
-        $resultado = $this->enviar_solicitud_meli('items', 'POST', $datosVehiculo, true, $token);
+        $resultado = $this->enviarSolicitudMeli('items', 'POST', $datosVehiculo, true, $token);
 
         if (!$resultado['success']) {
             $mensajeUsuario = "Hubo un problema con la publicación: " . $resultado['mensaje_respuesta'];

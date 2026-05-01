@@ -52,7 +52,7 @@ export const indexConfiguracionesMercadoLibre = () => {
 
             var configurarConexionMeli = `
                 <div class="alert alert-warning d-flex align-items-center" role="alert">
-                    <strong>${window.RedaIntegraciones["No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre."] || "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre."}</strong>
+                    <strong>${window.RedaIntegraciones["No se encontró un token de Mercado Libre válido para el usuario conectado Por favor, configura la conexión con Mercado Libre."] || "No se encontró un token de Mercado Libre válido para el usuario conectado. Por favor, configura la conexión con Mercado Libre."}</strong>
                 </div>
                 <div class="d-flex justify-content-center">
                     <a href="#" id="opcion_configurar_conexion_meli" class="btn btn-primary">
@@ -65,16 +65,11 @@ export const indexConfiguracionesMercadoLibre = () => {
                 const respuestaObtenerTokenMeli = await obtenerTokenMeli($("#codigo_temporal").val());
                 if (respuestaObtenerTokenMeli.codigo_respuesta == 0)
                 {
-                    token_meli = respuestaObtenerTokenMeli.token_meli;
-                    refresh_token_meli = respuestaObtenerTokenMeli.refresh_token_meli;
-                    guardarTokenMeli('obtener', token_meli, refresh_token_meli, ajaxurl, 0);
-                    console.log('indexMercadoLibre, solicitarTokenML, token_meli', token_meli);
-                    console.log('indexMercadoLibre, solicitarTokenML, refresh_token_meli', refresh_token_meli);
+                    //
                 }
                 else
                 {
-                    $("#configuracion_conexion_meli").text("Estimado usuario no se pudo obtener su token de Mercado Libre");
-                    ejecutarErrorTokenMeli(respuestaObtenerTokenMeli.error, respuestaObtenerTokenMeli.mensaje_error);
+                    //
                 }
             }
 
