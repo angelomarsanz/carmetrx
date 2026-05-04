@@ -1,6 +1,6 @@
 import { obtenerOrigenPrefijoBase } from "./obtenerOrigenPrefijoBase.js";
 
-export const obtenerTokenMeli = (codigo_temporal) => {
+export const obtenerTokenMeli = (codigoTemporal) => {
     const origenPrefijoBase = obtenerOrigenPrefijoBase();
     const origin = origenPrefijoBase.origin;
     const prefijo = origenPrefijoBase.prefijo;
@@ -15,28 +15,40 @@ export const obtenerTokenMeli = (codigo_temporal) => {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
             data: {
-                'codigo_temporal': codigo_temporal
+                'accion': 'authorization_code',
+                'codigo_refresh_token': codigoTemporal
             },
             success: function(data)
             {
                 resolve(data);
             },
-            error: function (x, xs, xt)
-            {
-                console.log('error', JSON.stringify(x));
+            error: function (x, xs, xt) {
+                let responseTextObjeto = JSON.parse(x.responseText);
+                console.log('mensaje de error', responseTextObjeto);
 
-                // Si x.status es 0, significa que no hubo respuesta del servidor (error de red)
-                const statusCode = x.status !== 0 ? x.status : 504;
+                // 1. Intentamos obtener el JSON que el servidor envió junto con el error 400
+                let respuestaServidor = {};
+                try {
+                    // x.responseText contiene el cuerpo del JSON enviado por Laravel
+                    respuestaServidor = responseTextObjeto;
+                } catch (e) {
+                    respuestaServidor = {};
+                }
+
                 const mensajeErrorBase = window.RedaIntegraciones["Error en el servidor de Carmetric"] || "Error en el servidor de Carmetric";
+                const detalleError = responseTextObjeto.message ? `<br />${responseTextObjeto.message}` : '';
+
+                // 2. Construimos la respuesta usando los datos reales del servidor si existen
+
                 let respuesta = {
-                    'success' : false,
-                    'codigo_respuesta' : 99,
-                    'codigo_http' : statusCode,
-                    'mensaje_respuesta' : `${mensajeErrorBase}. ${xt}`,,
-                    'respuesta' : '',
-                    'error_curl' : '',
-                    'causas' : ''
-                    }
+                    'success': false,
+                    'codigo_respuesta': respuestaServidor.codigo_respuesta || 99, // 99 si no hay código interno
+                    'codigo_http': x.status !== 0 ? x.status : 504,
+                    'mensaje_respuesta': respuestaServidor.mensaje_respuesta ? (window.RedaIntegraciones[respuestaServidor.mensaje_respuesta] || respuestaServidor.mensaje_respuesta) : `${mensajeErrorBase}.${detalleError}`,
+                    'respuesta': respuestaServidor.respuesta || '',
+                    'error_curl' : respuestaServidor.error_curl || '',
+                    'causas': respuestaServidor.causas || (responseTextObjeto.trace ? [`${responseTextObjeto.file}, linea ${responseTextObjeto.line}`, `${responseTextObjeto.trace[0].file}, linea ${responseTextObjeto.trace[0].line}`] : [])
+                };
                 resolve(respuesta);
             }
         });

@@ -30,5 +30,16 @@
     "Mercado Libre retornó un error" : "Mercado Libre retornó un error",
     "Error de conexión con Mercado Libre: " : "Error de conexión con Mercado Libre: ",
     "No se pudo obtener el token de Mercado Libre" : "No se pudo obtener el token de Mercado Libre",
-
+    "mensaje" : "mensaje",
+    "Código Interno" : "Código Interno",
+    "Error: El ID del usuario es obligatorio" : "Error: El ID del usuario es obligatorio",
+    "Error: El vector de atributos está vacío" : "Error: El vector de atributos está vacío",
+    "Error: Nombre de tabla no reconocida (" : "Error: Nombre de tabla no reconocida (",
+    "Atributos actualizados correctamente en " : "Atributos actualizados correctamente en ",
+    "Motivo" : "Motivo",
+    "idUsuario o idPropiedad (se requiere al menos uno)" : "idUsuario o idPropiedad (se requiere al menos uno)",
+    "Error: Faltan los siguientes datos: " : "Error: Faltan los siguientes datos: ",
+    "Error en actualizarDatosMeli: " : "Error en actualizarDatosMeli: ",
+    "Conexión con Mercado Libre configurada exitosamente" : "Conexión con Mercado Libre configurada exitosamente",
+    "El usuario con rol de agencia es el único que puede configurar la conexión con Mercado Libre" : "El usuario con rol de agencia es el único que puede configurar la conexión con Mercado Libre."
 }

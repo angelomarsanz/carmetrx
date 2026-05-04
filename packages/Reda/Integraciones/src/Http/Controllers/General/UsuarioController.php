@@ -12,41 +12,11 @@ use Reda\Integraciones\Models\MercadoLibre\AgentMeli;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Reda\Integraciones\Http\Controllers\MercadoLibre\ConfiguracionController;
+use Reda\Integraciones\Traits\MercadoLibre\MeliRequestsTrait;
 
 class UsuarioController extends Controller
 {
-    /**
-     * Obtiene el origen y prefijo base de la URL, similar a obtenerOrigenPrefijoBase.js pero en PHP.
-     * @param Request $request
-     * @return array ['origin' => ..., 'prefijo' => ...]
-     */
-    public function obtenerOrigenPrefijoBase(Request $request)
-    {
-        // Obtener el path y el host
-        $path = $request->getPathInfo();
-        $host = $request->getSchemeAndHttpHost();
-        $slugs = array_values(array_filter(explode('/', $path), function($slug) { return $slug !== ''; }));
-
-        $prefijoBase = '';
-
-        // Caso 1: Administrador (/admin/...)
-        if (isset($slugs[0]) && $slugs[0] === 'admin' && (!isset($slugs[1]) || $slugs[1] !== 'agent')) {
-            $prefijoBase = '/admin';
-        }
-        // Caso 2: Agencia/User (/user/...)
-        else if (isset($slugs[0]) && $slugs[0] === 'user' && (!isset($slugs[1]) || $slugs[1] !== 'agent')) {
-            $prefijoBase = '/user';
-        }
-        // Caso 3: Agente (/{username}/agent/...)
-        else if (isset($slugs[1]) && $slugs[1] === 'agent') {
-            $prefijoBase = '/' . $slugs[0] . '/' . $slugs[1];
-        }
-
-        return [
-            'origin' => $host,
-            'prefijo' => $prefijoBase
-        ];
-    }
+    use MeliRequestsTrait;
 
     /**
      * Verificar si el usuario está autenticado y devolver sus datos
@@ -57,38 +27,30 @@ class UsuarioController extends Controller
      * Si $returnArray es true, retorna un array asociativo (llamada interna).
      * Si $returnArray es false (por defecto), retorna un JSON (llamada Ajax o HTTP normal).
      */
-    public function verificarUsuarioConectado(Request $request, $returnArray = false)
+    public function verificarUsuarioConectado(?Request $request, $returnArray = false)
     {
         // Preferimos el parámetro `prefijo` si viene desde el cliente.
         // Si no está, usamos la lógica PHP equivalente a obtenerOrigenPrefijoBase.js
-        if ($request->has('origin') && $request->has('prefijo')) {
+        if ($request) { 
             $origin = $request->input('origin');
             $prefijo = $request->input('prefijo');
         } else {
-            $origenPrefijo = self::obtenerOrigenPrefijoBase($request);
+            $origenPrefijo = $this->obtenerOrigenPrefijoBase();
             $origin = $origenPrefijo['origin'];
             $prefijo = $origenPrefijo['prefijo'];
         }
-
-        $respuesta = [
-            'codigo_respuesta' => 0,
-            'mensaje_respuesta' => '',
-            'id_usuario_administrador' => 0,
-            'id_usuario_agencia' => 0,
-            'id_usuario_agente' => 0,
-            'id_usuario_conectado' => 0,
-            'rol_usuario_conectado' => 0,
-            'tipo_agencia_agente' => ''
-        ];
-
-        $codigoRespuestaJson = 200;
 
         if ($prefijo === '/user') {
             $user = Auth::user();
             if (!$user) {
                 $respuesta = [
-                    'codigo_respuesta' => 2,
+                    'success' => false,
+                    'codigo_respuesta' => 1,
+                    'codigo_http' => 401,
                     'mensaje_respuesta' => __('Usuario no autenticado'),
+                    'respuesta' => '',
+                    'error_curl' => '',
+                    'causas'  => '',
                     'id_usuario_administrador' => 0,
                     'id_usuario_agencia' => 0,
                     'id_usuario_agente' => 0,
@@ -96,12 +58,16 @@ class UsuarioController extends Controller
                     'rol_usuario_conectado' => 0,
                     'tipo_agencia_agente' => ''
                 ];
-                $codigoRespuestaJson = 401;
             }
             else {
                 $respuesta = [
+                    'success' => true,
                     'codigo_respuesta' => 0,
+                    'codigo_http' => 200,
                     'mensaje_respuesta' => __('Verificación exitosa'),
+                    'respuesta' => '',
+                    'error_curl' => '',
+                    'causas'  => '',
                     'id_usuario_administrador' => 0,
                     'id_usuario_agencia' => $user->id,
                     'id_usuario_agente' => $user->id,
@@ -115,12 +81,16 @@ class UsuarioController extends Controller
             $agente = $this->obtenerAgente();
             if (is_array($agente) && isset($agente['codigo_respuesta']) && $agente['codigo_respuesta'] !== 0) {
                 $respuesta = $agente;
-                $codigoRespuestaJson = 401;
             }
             else {
                 $respuesta = [
+                    'success' => true,
                     'codigo_respuesta' => 0,
+                    'codigo_http' => 200,
                     'mensaje_respuesta' => __('Verificación exitosa'),
+                    'respuesta' => '',
+                    'error_curl' => '',
+                    'causas'  => '',
                     'id_usuario_administrador' => $agente['id_usuario_administrador'],
                     'id_usuario_agencia' => $agente['id_usuario_agencia'],
                     'id_usuario_agente' => $agente['id_agente_conectado'],
@@ -134,8 +104,13 @@ class UsuarioController extends Controller
             if (Auth::guard('admin')->check()) {
                 $admin = Auth::guard('admin')->user();
                 $respuesta = [
+                    'success' => true,
                     'codigo_respuesta' => 0,
+                    'codigo_http' => 200,
                     'mensaje_respuesta' => __('Verificación exitosa'),
+                    'respuesta' => '',
+                    'error_curl' => '',
+                    'causas'  => '',
                     'id_usuario_administrador' => $admin->id,
                     'id_usuario_agencia' => 0,
                     'id_usuario_agente' => 0,
@@ -146,8 +121,13 @@ class UsuarioController extends Controller
                 $idUsuarioConectado = $admin->id;
             } else {
                 $respuesta = [
+                    'success' => false,
                     'codigo_respuesta' => 2,
+                    'codigo_http' => 401,
                     'mensaje_respuesta' => __('Usuario no autenticado'),
+                    'respuesta' => '',
+                    'error_curl' => '',
+                    'causas'  => '',
                     'id_usuario_administrador' => 0,
                     'id_usuario_agencia' => 0,
                     'id_usuario_agente' => 0,
@@ -155,12 +135,16 @@ class UsuarioController extends Controller
                     'rol_usuario_conectado' => 0,
                     'tipo_agencia_agente' => ''
                 ];
-                $codigoRespuestaJson = 401;
             }
         } else {
             $respuesta = [
+                'success' => false,
                 'codigo_respuesta' => 3,
+                'codigo_http' => 400,
                 'mensaje_respuesta' => __('Valor inválido para prefijo'),
+                'respuesta' => '',
+                'error_curl' => '',
+                'causas'  => '',
                 'id_usuario_administrador' => 0,
                 'id_usuario_agencia' => 0,
                 'id_usuario_agente' => 0,
@@ -168,20 +152,30 @@ class UsuarioController extends Controller
                 'rol_usuario_conectado' => 0,
                 'tipo_agencia_agente' => ''
             ];
-            $codigoRespuestaJson = 400;
         }
+
+        Log::info("verificarUsuarioConectado, respuesta: " . print_r($respuesta, true));
 
         if ($respuesta['id_usuario_conectado'] != 0 && $respuesta['tipo_agencia_agente'] != '') {
             $vectorAtributosDatosMeli = [
-                'codigo_respuesta_verificar_usuario_conectado' => $respuesta['codigo_respuesta'],
-                'mensaje_respuesta_verificar_usuario_conectado' => $respuesta['mensaje_respuesta'],
-                'fecha_hora_verificar_usuario_conectado' => (new ConfiguracionController())->fechaHoraActual()
+                'verificar_usuario_conectado' => [
+                    'codigo_respuesta' => $respuesta['codigo_respuesta'],
+                    'mensaje_respuesta' => $respuesta['mensaje_respuesta'],
+                    'fecha_hora' => $this->fechaHoraActual()['fecha_hora_actual_formato']
+                ],
             ];
 
-            $respuestaActualizarDatosMeliUsuario = $this->actualizarDatosMeliUsuario($vectorAtributosDatosMeli, $respuesta['id_usuario_conectado'], $respuesta['tipo_agencia_agente']);
+            $nombreTabla = $this->usuarioTabla($respuesta['tipo_agencia_agente']);
+
+            $respuestaActualizarDatosMeli = $this->actualizarDatosMeli($vectorAtributosDatosMeli, $respuesta['id_usuario_conectado'], null, $nombreTabla, 'datos_meli');
+
+            if ($respuestaActualizarDatosMeli['success'] == false) 
+            {
+                $respuesta = $respuestaActualizarDatosMeli;
+            }
         }
 
-        return $returnArray ? $respuesta : response()->json($respuesta, $codigoRespuestaJson);
+        return $returnArray ? $respuesta : response()->json($respuesta, $respuesta['codigo_http']);
     }
     public static function obtenerAgente()
     {
@@ -198,8 +192,13 @@ class UsuarioController extends Controller
                 if ($tenant && isset($agent->user_id) && $agent->user_id == $tenant->id) {
                     // retornar tanto el id del usuario como el id del agente
                     return [
+                        'success' => true,
                         'codigo_respuesta' => 0,
+                        'codigo_http' => 200,
                         'mensaje_respuesta' => __('Verificación exitosa'),
+                        'respuesta' => '',
+                        'error_curl' => '',
+                        'causas'  => '',
                         'id_usuario_administrador' => 0,
                         'id_usuario_agencia' => $agent->user_id,
                         'id_usuario_agente' => $agent->id,
@@ -209,69 +208,37 @@ class UsuarioController extends Controller
                 }
                 // Si no coincide el tenant, enviar vector con código de error
                 return [
+                    'success' => false,
                     'codigo_respuesta' => 1,
-                    'mensaje_respuesta' => __('El agente no pertenece al tenant actual')
+                    'codigo_http' => 400,
+                    'mensaje_respuesta' => __('El agente no pertenece al tenant actual'),
+                    'respuesta' => '',
+                    'error_curl' => '',
+                    'causas' => ''
                 ];
             }
 
             // Si no existe getUser(), enviar vector con código de error
             return [
+                'success' => false,
                 'codigo_respuesta' => 2,
-                'mensaje_respuesta' => __('No se pudo obtener el tenant actual')
+                'codigo_http' => 404,
+                'mensaje_respuesta' => __('No se pudo obtener el tenant actual'),
+                'respuesta' => '',
+                'error_curl' => '',
+                'causas' => ''
             ];
         } catch (\Exception $e) {
             // En caso de error, enviar vector con código de error y mensaje_respuesta
             return [
+                'success' => false,
                 'codigo_respuesta' => 3,
-                'mensaje_respuesta' => __('Error al obtener el agente: ') . $e->getMessage()
-            ];
-        }
-    }
-    public function actualizarDatosMeliUsuario($vectorAtributos = [], $idUsuario = null, $tipoUsuario = null)
-    {
-        try {
-            // 1. Verificación de parámetros obligatorios
-            if (empty($idUsuario)) {
-                return [
-                    'codigo_respuesta' => 1,
-                    'mensaje_respuesta' => 'Error: El ID del usuario es obligatorio.'
-                ];
-            }
-
-            if (empty($vectorAtributos)) {
-                return [
-                    'codigo_respuesta' => 1,
-                    'mensaje_respuesta' => 'Error: El vector de atributos está vacío.'
-                ];
-            }
-
-            // 2. Buscamos el registro o creamos una instancia nueva si no existe
-            // firstOrNew busca por user_id; si no lo halla, prepara un objeto nuevo con ese user_id
-            $userMeli = UserMeli::firstOrNew(['user_id' => $idUsuario]);
-
-            // 3. Lógica de actualización del JSON
-            // Gracias al cast 'array' en el modelo, $userMeli->datos_meli ya es un vector PHP
-            $datosActuales = $userMeli->datos_meli ?? [];
-
-            // Fusionamos: los valores de $vectorAtributos sustituyen a los actuales o se agregan
-            $datosActualizados = array_merge($datosActuales, $vectorAtributos);
-
-            // 4. Guardar cambios
-            $userMeli->datos_meli = $datosActualizados;
-            $userMeli->save();
-
-            return [
-                'codigo_respuesta' => 0,
-                'mensaje_respuesta' => 'Atributos actualizados correctamente.',
-                'datos_guardados' => $datosActualizados
-            ];
-
-        } catch (\Exception $e) {
-            return [
-                'codigo_respuesta' => 2,
-                'mensaje_respuesta' => 'Error interno al procesar la actualización.'
+                'codigo_http' => 404,
+                'mensaje_respuesta' => __('Error al obtener el agente: ') . $e->getMessage(),
+                'respuesta' => '',
+                'error_curl' => '',
+                'causas' => ''                
             ];
         }
     }
 }
-
