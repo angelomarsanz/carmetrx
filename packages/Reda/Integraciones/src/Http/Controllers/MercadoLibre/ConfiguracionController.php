@@ -7,6 +7,7 @@ use Reda\Integraciones\Models\MercadoLibre\UserMeli;
 use Illuminate\Support\Facades\Log;
 use Reda\Integraciones\Http\Controllers\General\UsuarioController;
 use Reda\Integraciones\Traits\MercadoLibre\MeliRequestsTrait;
+use DateTime;
 
 class ConfiguracionController extends Controller
 {
@@ -21,7 +22,7 @@ class ConfiguracionController extends Controller
 
     public function verificarTokenMeli(?Request $request, $datosUsuarioConectado = null, $retornaArray = false)
     {
-        setlocale(LC_TIME, 'es_UY', 'es_UY.UTF-8', 'es_UY.UTF-8'); 
+        setlocale(LC_TIME, 'es_UY', 'es_UY.UTF-8', 'es_UY.UTF-8');
 		date_default_timezone_set('America/Montevideo');
 
         if ($request) {
@@ -145,7 +146,7 @@ class ConfiguracionController extends Controller
 
                 $respuestaActualizarDatosMeli = $this->actualizarDatosMeli($vectorAtributosDatosMeli, $datosUsuarioConectado['id_usuario_conectado'], null, $nombreTabla, 'datos_meli');
 
-                if ($respuestaActualizarDatosMeli['success'] == false) 
+                if ($respuestaActualizarDatosMeli['success'] == false)
                 {
                     $respuesta = $respuestaActualizarDatosMeli;
                 }
@@ -166,7 +167,10 @@ class ConfiguracionController extends Controller
         {
             $accion = $request->input('accion');
             $codigoRefreshToken = $request->input('codigo_refresh_token');
+            $idUsuario = $request->input('id_usuario');
+            $tipoUsuario = $request->input('tipo_usuario');
         }
+
         $datos = [
             'grant_type'    => $accion,
             'client_id'     => env('CLIENT_ID_MELI'),
@@ -178,8 +182,6 @@ class ConfiguracionController extends Controller
         {
             $datos['redirect_uri'] = url('/user/mercado-libre/configuraciones');
         }
-
-        Log::info("obtenerTokenMeli, datos: " . print_r($datos, true));
 
         $nombreTabla = $this->usuarioTabla($tipoUsuario);
 

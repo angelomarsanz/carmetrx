@@ -1,6 +1,6 @@
 import { obtenerOrigenPrefijoBase } from "./obtenerOrigenPrefijoBase.js";
 
-export const obtenerTokenMeli = (codigoTemporal) => {
+export const obtenerTokenMeli = (codigoTemporal, idUsuario, tipoUsuario) => {
     const origenPrefijoBase = obtenerOrigenPrefijoBase();
     const origin = origenPrefijoBase.origin;
     const prefijo = origenPrefijoBase.prefijo;
@@ -16,7 +16,9 @@ export const obtenerTokenMeli = (codigoTemporal) => {
                 },
             data: {
                 'accion': 'authorization_code',
-                'codigo_refresh_token': codigoTemporal
+                'codigo_refresh_token': codigoTemporal,
+                'id_usuario' : idUsuario,
+                'tipo_usuario' : tipoUsuario
             },
             success: function(data)
             {

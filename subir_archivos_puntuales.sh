@@ -20,7 +20,7 @@ ARCHIVOS_PHP_PUNTUALES=(
     #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarTokenMeli.js"
     #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/obtenerTokenMeli.js"
     #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/listarCausasError.js"
-    #"packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ConfiguracionController.php"
+    "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ConfiguracionController.php"
     #"packages/Reda/Integraciones/src/Http/Controllers/General/UsuarioController.php"
-    #"packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
+    "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
 )

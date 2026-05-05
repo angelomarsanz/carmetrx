@@ -72,13 +72,49 @@ export const indexConfiguracionesMercadoLibre = () => {
             async function solicitarTokenML() {
                 $(containerId).html(verificandoUsuarioConectado);
                 const respuestaVerificarUsuarioConectado = await verificarUsuarioConectado();
-                let codigo_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.codigo_respuesta;
-                let mensaje_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.mensaje_respuesta;
-                if (codigo_respuesta_verificar_usuario == 0) {
-                    let rol_usuario_conectado = respuestaVerificarUsuarioConectado.rol_usuario_conectado;
-                    if (rol_usuario_conectado != 'estate_agency') {
+                if (respuestaVerificarUsuarioConectado.codigo_respuesta == 0) {
+                    if (respuestaVerificarUsuarioConectado.tipo_agencia_agente != 'estate_agency') {
                         $(containerId).html(usuarioAgenciaUnicamenteConfiguraMeli);
                         return;
+                    }
+                    else {
+                        // Mostramos un mensaje de "Procesando" mientras esperamos la respuesta
+                        $(containerId).html(`
+                            <div class="alert alert-info d-flex align-items-center" role="alert">
+                                <strong>${window.RedaIntegraciones["Procesando vinculación con Mercado Libre"] || "Procesando vinculación con Mercado Libre..."}</strong>
+                            </div>
+                            <div class="d-flex justify-content-center">${gifEspere}</div>
+                        `);
+
+                        const respuestaObtenerTokenMeli = await obtenerTokenMeli($("#codigo_temporal").val(), respuestaVerificarUsuarioConectado.id_usuario_conectado, respuestaVerificarUsuarioConectado.tipo_agencia_agente);
+
+                        if (respuestaObtenerTokenMeli.success && respuestaObtenerTokenMeli.codigo_respuesta == 0) {
+                            // --- CASO ÉXITO ---
+                            $(containerId).html(conexionMeliConfiguradaExitosamente);
+                        }
+                        else {
+                            // --- CASO ERROR (códigos 1, 2, 99) ---
+                            let htmlCausas = listarCausasError(respuestaObtenerTokenMeli.causas);
+                            let errorObteniendoTokenMeli = `
+                                <div class="alert alert-danger" role="alert">
+                                    <div class="mb-2">
+                                        <strong>${window.RedaIntegraciones["No se pudo obtener el token de Mercado Libre"] || "No se pudo obtener el token de Mercado Libre"}</strong>
+                                    </div>
+                                    <div class="small">
+                                        <span class="d-block">
+                                            <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaObtenerTokenMeli.codigo_respuesta}
+                                        </span>
+                                        <span class="d-block">
+                                            <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaObtenerTokenMeli.mensaje_respuesta}
+                                        </span>
+                                        ${htmlCausas}
+                                    </div>
+                                </div>
+                            `;
+
+                            $(containerId).html(errorObteniendoTokenMeli);
+                        }
+
                     }
                 }
                 else {
@@ -101,53 +137,13 @@ export const indexConfiguracionesMercadoLibre = () => {
                 `;
                     $(containerId).html(errorVerificandoUsuario);
                 }
-
-                // Mostramos un mensaje de "Procesando" mientras esperamos la respuesta
-                $(containerId).html(`
-                    <div class="alert alert-info d-flex align-items-center" role="alert">
-                        <strong>${window.RedaIntegraciones["Procesando vinculación con Mercado Libre"] || "Procesando vinculación con Mercado Libre..."}</strong>
-                    </div>
-                    <div class="d-flex justify-content-center">${gifEspere}</div>
-                `);
-
-                const respuestaObtenerTokenMeli = await obtenerTokenMeli($("#codigo_temporal").val());
-                
-                if (respuestaObtenerTokenMeli.success && respuestaObtenerTokenMeli.codigo_respuesta == 0) {
-                    // --- CASO ÉXITO ---
-                    $(containerId).html(conexionMeliConfiguradaExitosamente);
-                } 
-                else {
-                    // --- CASO ERROR (códigos 1, 2, 99) ---
-                    let htmlCausas = listarCausasError(respuestaObtenerTokenMeli.causas);
-                    let errorObteniendoTokenMeli = `
-                        <div class="alert alert-danger" role="alert">
-                            <div class="mb-2">
-                                <strong>${window.RedaIntegraciones["No se pudo obtener el token de Mercado Libre"] || "No se pudo obtener el token de Mercado Libre"}</strong>
-                            </div>
-                            <div class="small">
-                                <span class="d-block">
-                                    <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaObtenerTokenMeli.codigo_respuesta}
-                                </span>
-                                <span class="d-block">
-                                    <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaObtenerTokenMeli.mensaje_respuesta}
-                                </span>
-                                ${htmlCausas}
-                            </div>
-                        </div>
-                    `;
-
-                    $(containerId).html(errorObteniendoTokenMeli);
-                }
             }
 
             async function buscarTokenBaseDatos() {
                 $(containerId).html(verificandoUsuarioConectado);
                 const respuestaVerificarUsuarioConectado = await verificarUsuarioConectado();
-                let codigo_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.codigo_respuesta;
-                let mensaje_respuesta_verificar_usuario = respuestaVerificarUsuarioConectado.mensaje_respuesta;
-                if (codigo_respuesta_verificar_usuario == 0) {
-                    let rol_usuario_conectado = respuestaVerificarUsuarioConectado.rol_usuario_conectado;
-                    if (rol_usuario_conectado != 'estate_agency') {
+                if (respuestaVerificarUsuarioConectado.codigo_respuesta == 0) {
+                    if (respuestaVerificarUsuarioConectado.tipo_agencia_agente != 'estate_agency') {
                         $(containerId).html(usuarioAgenciaUnicamenteConfiguraMeli);
                         return;
                     }

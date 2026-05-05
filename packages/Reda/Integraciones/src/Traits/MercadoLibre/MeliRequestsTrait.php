@@ -4,6 +4,7 @@ namespace Reda\Integraciones\Traits\MercadoLibre;
 
 use Reda\Integraciones\Http\Controllers\General\UsuarioController;
 use Illuminate\Support\Facades\Log;
+use DateTime;
 
 trait MeliRequestsTrait
 {
@@ -42,8 +43,8 @@ trait MeliRequestsTrait
      */
     protected function enviarSolicitudMeli($punto_final, $metodo = 'GET', $datos = [], $requiere_autenticacion = false, $token_acceso = null, $es_oauth = false, $nombreFuncion = null, $idUsuario = null, $idPropiedad = null, $nombreTabla = null)
     {
-        $vectorAtributosDatosMeli = [ 'solicitud_'.$nombreFuncion => $datos];     
-        
+        $vectorAtributosDatosMeli = [ 'solicitud_'.$nombreFuncion => $datos];
+
         $respuestaActualizarDatosMeliUsuario = $this->actualizarDatosMeli($vectorAtributosDatosMeli, $idUsuario, $idPropiedad, $nombreTabla, 'envios_meli'); // Guardamos la solicitud en la columna 'envios_meli' para análisis posterior
 
         $url_base = 'https://api.mercadolibre.com/';
@@ -90,16 +91,16 @@ trait MeliRequestsTrait
         $error_curl    = curl_error($manejador_curl);
         curl_close($manejador_curl);
 
-        $vectorAtributosDatosMeli = [ 'respuesta_'.$nombreFuncion => 
+        $vectorAtributosDatosMeli = [ 'respuesta_'.$nombreFuncion =>
             [
                 'respuesta_raw' => $respuesta_raw,
                 'codigo_http' => $codigo_http,
                 'error_curl' => $error_curl,
             ]
-        ];     
+        ];
 
         $respuestaActualizarDatosMeliUsuario = $this->actualizarDatosMeli($vectorAtributosDatosMeli, $idUsuario, $idPropiedad, $nombreTabla, 'respuesta_meli'); // Guardamos la respuesta en la columna 'respuesta_meli' para análisis posterior
-        
+
         $respuesta_decodificada = json_decode($respuesta_raw, true);
         $exito_http = ($respuesta_raw !== false && $codigo_http >= 200 && $codigo_http < 300);
 
@@ -155,15 +156,14 @@ trait MeliRequestsTrait
     {
         setlocale(LC_TIME, 'es_UY', 'es_UY.UTF-8', 'es_UY.UTF-8');
         date_default_timezone_set('America/Montevideo');
-        
+
         $fechaHoraActualFormato = date("Y-m-d H:i:s");
-        
-        // Agregamos la \ antes de DateTime
-        $fechaHoraActualObjeto = new \DateTime('now'); 
+
+        $fechaHoraActualObjeto = new DateTime('now');
 
         return [
             // Corregimos el nombre de la variable aquí
-            'fecha_hora_actual_formato' => $fechaHoraActualFormato, 
+            'fecha_hora_actual_formato' => $fechaHoraActualFormato,
             'fecha_hora_actual_objeto' => $fechaHoraActualObjeto
         ];
     }
@@ -260,7 +260,7 @@ trait MeliRequestsTrait
         } catch (\Exception $e) {
             // Logueamos el error para depuración
             \Log::error("Error en actualizarDatosMeli: " . $e->getMessage());
-            
+
             return [
                 'success' => false,
                 'codigo_respuesta' => 4,
