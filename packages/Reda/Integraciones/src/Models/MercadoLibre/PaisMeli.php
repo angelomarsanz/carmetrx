@@ -25,7 +25,7 @@ class PaisMeli extends Model
         'respuesta_meli' => 'array',
     ];
 
-    public function property(): BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User\Property\Country::class, 'user_country_id');
     }

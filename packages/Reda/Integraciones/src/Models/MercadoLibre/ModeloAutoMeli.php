@@ -5,14 +5,14 @@ namespace Reda\Integraciones\Models\MercadoLibre;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CiudadMeli extends Model
+class MarcaAutoMeli extends Model
 {
     // Definimos la tabla explícitamente
-    protected $table = 'ciudades_melis';
+    protected $table = 'modelos_autos_melis';
 
     // Campos que permitimos llenar masivamente
     protected $fillable = [
-        'user_city_id',
+        'user_car_model_id',
         'datos_meli',
         'envios_meli',
         'respuesta_meli',
@@ -25,8 +25,8 @@ class CiudadMeli extends Model
         'respuesta_meli' => 'array',
     ];
 
-    public function city(): BelongsTo
+    public function userCarModel(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User\Property\City::class, 'user_city_id');
+        return $this->belongsTo(\App\Models\User\UserCarModel::class, 'user_car_model_id');
     }
 }

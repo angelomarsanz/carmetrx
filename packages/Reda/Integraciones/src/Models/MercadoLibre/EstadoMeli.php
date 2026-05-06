@@ -25,7 +25,7 @@ class EstadoMeli extends Model
         'respuesta_meli' => 'array',
     ];
 
-    public function property(): BelongsTo
+    public function state(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User\Property\State::class, 'user_state_id');
     }

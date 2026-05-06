@@ -25,7 +25,7 @@ class AmenidadMeli extends Model
         'respuesta_meli' => 'array',
     ];
 
-    public function property(): BelongsTo
+    public function amenity(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User\Property\Amenity::class, 'user_amenity_id');
     }

@@ -13,6 +13,12 @@ ARCHIVOS_PHP_PUNTUALES=(
     #"Ninguno"
     "packages/Reda/Integraciones/resources/lang/es.json"
     "packages/Reda/Integraciones/routes/web.php"
+    "packages/Reda/Integraciones/src/Models/MercadoLibre/MarcaAutoMeli.php"
+    "packages/Reda/Integraciones/database/migrations/2026_05_06_085222_create_marcas_autos_melis_table.php"
+    "app/Models/User/UserCarModel.php"
+    "packages/Reda/Integraciones/database/migrations/2026_05_06_085223_create_modelos_autos_melis_table.php"
+    "packages/Reda/Integraciones/src/Models/MercadoLibre/AmenidadMeli.php"
+    "packages/Reda/Integraciones/src/Models/MercadoLibre/PaisMeli.php"
     "packages/Reda/Integraciones/src/Models/MercadoLibre/EstadoMeli.php"
-    "packages/Reda/Integraciones/database/migrations/2026_05_06_085221_rename_state_id_in_estados_melis_table.php"
+    "packages/Reda/Integraciones/src/Models/MercadoLibre/CityMeli.php"
 )
