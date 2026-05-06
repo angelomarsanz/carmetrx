@@ -30,6 +30,7 @@ class PropertyStoreRequest extends FormRequest
      */
     public function rules()
     {
+
         if (Auth::guard('agent')->check() && Auth::guard('agent')->user()) {
             $tenantId = Auth::guard('agent')->user()->user_id;
             $userCurrentPackage =  UserPermissionHelper::currentPackage($tenantId);
