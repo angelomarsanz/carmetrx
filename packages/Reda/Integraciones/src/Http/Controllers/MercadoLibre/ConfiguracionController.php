@@ -239,18 +239,26 @@ class ConfiguracionController extends Controller
 			return response()->json($respuestaActualizarDatosMeli, $respuestaActualizarDatosMeli['codigo_http']);
 		}
 	}
-    public function sincronizarMarcasMeli()
+    public function sincronizarMarcasMeli(Request $request, $token = null)
     {
-        // 1. Tomamos el token actualizado del usuario de pruebas de Mercado libre
-        $tokenMeli = "APP_USR-6732449785458614-050706-6bd03a8635fe06545536204439c39a7e-1532684552";
+        // 1. Obtención del Token (Prioriza parámetro de ruta, luego Query String)
+        $tokenMeli = $token ?? $request->query('token');
 
+        if (!$tokenMeli) {
+            return response()->json(['success' => false, 'mensaje' => 'Token no proporcionado.'], 400);
+        }
+
+        // 2. Obtener datos de conexión para el Trait
         $respuestaVerificarUsuarioConectado = (new UsuarioController())->verificarUsuarioConectado(null, true);
-        $idUsuario = $respuestaVerificarUsuarioConectado['id_usuario_conectado'];
-        $tipoUsuario = $respuestaVerificarUsuarioConectado['tipo_agencia_agente'];
-        $nombreTabla = $this->usuarioTabla($tipoUsuario);
 
-        // 2. Consultar marcas en MLU (Uruguay) para la categoría de Autos y Camionetas
-        // Endpoint: /categories/MLU1744/attributes
+        if (!$respuestaVerificarUsuarioConectado['success']) {
+            return response()->json(['success' => false, 'mensaje' => __('No se pudo verificar el usuario conectado'), 'respuestaVerificarUsuarioConectado' => $respuestaVerificarUsuarioConectado], $respuestaVerificarUsuarioConectado['codigo_http']);
+        }
+
+        $idUsuario = $respuestaVerificarUsuarioConectado['id_usuario_conectado'];
+        $nombreTabla = $this->usuarioTabla($respuestaVerificarUsuarioConectado['tipo_agencia_agente']);
+
+        // 3. Consultar marcas en Mercado Libre Uruguay (MLU)
         $respuestaMeli = $this->enviarSolicitudMeli(
             'categories/MLU1744/attributes',
             'GET',
@@ -266,37 +274,71 @@ class ConfiguracionController extends Controller
 
         if (!$respuestaMeli['success']) return response()->json($respuestaMeli, 500);
 
-        // 3. Buscar el atributo "BRAND" en la respuesta
+        // 4. Extraer el listado de marcas de la API
         $marcasMeli = collect($respuestaMeli['respuesta'])->firstWhere('id', 'BRAND')['values'] ?? [];
 
-        $count = 0;
-        foreach ($marcasMeli as $marca) {
-            DB::transaction(function () use ($marca, &$count) {
-                // A. Insertar o recuperar de la tabla original (user_car_brand)
-                // Usamos language_id 180 como se ve en tu SQL
-                $carBrand = UserCarBrand::firstOrCreate(
-                    ['name' => $marca['name']],
-                    ['language_id' => 180]
-                );
+        // --- CARGA DE DATOS EXISTENTES PARA EVITAR DUPLICADOS ---
+        
+        // Nombres de marcas ya existentes en minúsculas para comparar: ['toyota' => id, ...]
+        $marcasExistentesDB = UserCarBrand::all()->pluck('id', 'name')->mapWithKeys(function ($id, $name) {
+            return [strtolower(trim($name)) => $id];
+        });
 
-                // B. Insertar o actualizar en tu tabla de integración (marcas_autos_melis)
-                MarcaAutoMeli::updateOrCreate(
-                    ['user_car_brand_id' => $carBrand->id],
-                    [
-                        'datos_meli' => [
-                            'meli_id' => $marca['id'],
-                            'nombre_meli' => $marca['name']
-                        ],
-                        'respuesta_meli' => $marca // Guardamos la respuesta completa para referencia
-                    ]
-                );
-                $count++;
+        // IDs de marcas que ya tienen relación con Meli: [1, 2, 5, ...]
+        $relacionesExistentesMeli = MarcaAutoMeli::all()->pluck('user_car_brand_id')->toArray();
+
+        $nuevasMarcasBase = 0;
+        $nuevasRelacionesMeli = 0;
+        $yaExistentes = 0;
+
+        // 5. Procesamiento
+        foreach ($marcasMeli as $marca) {
+            $nombreLimpio = strtolower(trim($marca['name']));
+
+            DB::transaction(function () use ($marca, $nombreLimpio, &$marcasExistentesDB, &$relacionesExistentesMeli, &$nuevasMarcasBase, &$nuevasRelacionesMeli, &$yaExistentes) {
+                
+                // PASO A: Asegurar la existencia en la tabla original (user_car_brand)
+                if ($marcasExistentesDB->has($nombreLimpio)) {
+                    $brandId = $marcasExistentesDB->get($nombreLimpio);
+                } else {
+                    $nuevaMarca = UserCarBrand::create([
+                        'name' => $marca['name'],
+                        'language_id' => 180 // Español
+                    ]);
+                    $brandId = $nuevaMarca->id;
+                    $marcasExistentesDB->put($nombreLimpio, $brandId);
+                    $nuevasMarcasBase++;
+                }
+
+                // PASO B: Verificar si ya existe la relación en nuestra tabla marcas_autos_melis
+                if (in_array($brandId, $relacionesExistentesMeli)) {
+                    $yaExistentes++;
+                    return; // Ya está sincronizada, saltamos a la siguiente
+                }
+
+                // PASO C: Solo si no existía la relación, la creamos
+                MarcaAutoMeli::create([
+                    'user_car_brand_id' => $brandId,
+                    'datos_meli' => [
+                        'meli_id' => $marca['id'],
+                        'nombre_meli' => $marca['name']
+                    ],
+                    'respuesta_meli' => $marca 
+                ]);
+                
+                $relacionesExistentesMeli[] = $brandId;
+                $nuevasRelacionesMeli++;
             });
         }
 
         return response()->json([
             'success' => true,
-            'mensaje' => "Se han sincronizado $count marcas correctamente."
+            'mensaje' => "Sincronización semestral finalizada.",
+            'resultado' => [
+                'marcas_nuevas_en_proyecto' => $nuevasMarcasBase,
+                'nuevas_vinculaciones_con_meli' => $nuevasRelacionesMeli,
+                'marcas_que_ya_estaban_al_dia' => $yaExistentes
+            ]
         ]);
     }
 }

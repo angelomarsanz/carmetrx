@@ -31,8 +31,8 @@ Route::domain($domain)->group(function () use ($domain) {
             Route::get('mercado-libre/configuraciones', [ConfiguracionController::class, 'index'])->name('reda.integraciones.mercado_libre.admin.configuraciones.index');
             Route::get('general/usuario/verificar-usuario-conectado', [UsuarioController::class, 'verificarUsuarioConectado'])->name('reda.integraciones.general.admin.verificar_usuario_conectado');
             Route::get('mercado-libre/importadores', [ImportadorController::class, 'index'])->name('reda.integraciones.mercado_libre.admin.importadores.index');
-            // En packages/Reda/Integraciones/routes/web.php
-            Route::get('mercado-libre/sincronizar-marcas', [ConfiguracionController::class, 'sincronizarMarcasMeli'])->name('reda.integraciones.mercado_libre.admin.sincronizar_marcas');
+            Route::get('mercado-libre/sincronizar-marcas/{token?}', [ConfiguracionController::class, 'sincronizarMarcasMeli'])
+                ->name('reda.integraciones.mercado_libre.admin.sincronizar_marcas');
         });
     });
 });

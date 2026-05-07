@@ -218,16 +218,20 @@ trait MeliRequestsTrait
             }
             // 2. Determinar dinámicamente el Modelo según el tipo de usuario
             $modeloClase = null;
+            $nombreColumnaId = null;
 
             switch ($nombreTabla) {
                 case 'admins_melis':
                     $modeloClase = \Reda\Integraciones\Models\MercadoLibre\AdminMeli::class;
+                    $nombreColumnaId = 'admin_id';
                     break;
                 case 'users_melis':
                     $modeloClase = \Reda\Integraciones\Models\MercadoLibre\UserMeli::class;
+                    $nombreColumnaId = 'user_id';
                     break;
                 case 'agents_melis':
                     $modeloClase = \Reda\Integraciones\Models\MercadoLibre\AgentMeli::class;
+                    $nombreColumnaId = 'user_agent_id';
                     break;
                 case 'propiedades_melis':
                     $modeloClase = \Reda\Integraciones\Models\MercadoLibre\PropiedadMeli::class;
@@ -248,7 +252,7 @@ trait MeliRequestsTrait
             // firstOrNew busca por user_id; si no lo halla, prepara el objeto
 
             if ($idPropiedad == null) {
-                $registroMeli = $modeloClase::firstOrNew(['user_id' => $idUsuario]);
+                $registroMeli = $modeloClase::firstOrNew([$nombreColumnaId => $idUsuario]);
             } else {
                 $registroMeli = $modeloClase::firstOrNew(['property_id' => $idPropiedad]);
             }

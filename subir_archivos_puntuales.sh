@@ -16,5 +16,5 @@ ARCHIVOS_PHP_PUNTUALES=(
     "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ConfiguracionController.php"
     "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
     "packages/Reda/Integraciones/routes/web.php"
-    
+    "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
 )
