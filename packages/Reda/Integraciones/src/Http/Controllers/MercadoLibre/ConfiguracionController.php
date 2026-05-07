@@ -29,8 +29,6 @@ class ConfiguracionController extends Controller
             $datosUsuarioConectado = $datosUsuarioConectado ?? $request->input('datos_usuario_conectado');
         }
 
-        Log::info("Contenido de datosUsuarioConectado: " . print_r($datosUsuarioConectado, true));
-
         $idUsuario = $datosUsuarioConectado['id_usuario_agencia'] ?? null;
         $tipoUsuario = $datosUsuarioConectado['tipo_agencia_agente'] ?? null;
 
@@ -63,23 +61,23 @@ class ConfiguracionController extends Controller
                     $fechaHoraTokenMeliObjeto = new DateTime($datos['fecha_hora_token_meli']);
                     $fechaHoraActualObjeto = $this->fechaHoraActual()['fecha_hora_actual_objeto'];
                     $intervaloDiferencia = $fechaHoraTokenMeliObjeto->diff($fechaHoraActualObjeto);
-                    $codigoRetornoTokenMeli = 0; // 0 = válido, 4 = expirado
+                    $codigoRetornoTokenMeli = 0; // 0 = válido, 1 = expirado
 
                     if ($intervaloDiferencia->y > 0)
                     {
-                        $codigoRetornoTokenMeli = 4;
+                        $codigoRetornoTokenMeli = 1;
                     }
                     elseif ($intervaloDiferencia->m > 0)
                     {
-                        $codigoRetornoTokenMeli = 4;
+                        $codigoRetornoTokenMeli = 1;
                     }
                     elseif ($intervaloDiferencia->d > 0)
                     {
-                        $codigoRetornoTokenMeli = 4;
+                        $codigoRetornoTokenMeli = 1;
                     }
                     elseif ($intervaloDiferencia->h > 4)
                     {
-                        $codigoRetornoTokenMeli = 4;
+                        $codigoRetornoTokenMeli = 1;
                     }
 
                     if ($codigoRetornoTokenMeli == 0)
@@ -175,12 +173,13 @@ class ConfiguracionController extends Controller
             'grant_type'    => $accion,
             'client_id'     => env('CLIENT_ID_MELI'),
             'client_secret' => env('CLIENT_SECRET_MELI'),
-            'code'          => $codigoRefreshToken,
         ];
 
-        if ($accion === "authorization_code")
-        {
+        if ($accion === "authorization_code") {
+            $datos['code'] = $codigoRefreshToken; // Para el primer intercambio
             $datos['redirect_uri'] = url('/user/mercado-libre/configuraciones');
+        } elseif ($accion === "refresh_token") {
+            $datos['refresh_token'] = $codigoRefreshToken; // Para renovar (lo que pide el error)
         }
 
         $nombreTabla = $this->usuarioTabla($tipoUsuario);

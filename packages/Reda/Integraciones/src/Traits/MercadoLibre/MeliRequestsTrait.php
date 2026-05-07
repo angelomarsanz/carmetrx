@@ -43,6 +43,22 @@ trait MeliRequestsTrait
      */
     protected function enviarSolicitudMeli($punto_final, $metodo = 'GET', $datos = [], $requiere_autenticacion = false, $token_acceso = null, $es_oauth = false, $nombreFuncion = null, $idUsuario = null, $idPropiedad = null, $nombreTabla = null)
     {
+        /*
+        $parametrosRecibidos = [
+            'punto_final' => $punto_final,
+            'metodo' => $metodo,
+            'datos' => $datos,
+            'requiere_autenticacion' => $requiere_autenticacion,
+            'token_acceso' => $token_acceso,
+            'es_oauth' => $es_oauth,
+            'nombreFuncion' => $nombreFuncion,
+            'idUsuario' => $idUsuario,
+            'idPropiedad' => $idPropiedad,
+            'nombreTabla' => $nombreTabla];
+
+        Log::info("enviarSolicitudMeli, parametrosRecibidos: " . print_r($parametrosRecibidos, true));
+        */
+
         $vectorAtributosDatosMeli = [ 'solicitud_'.$nombreFuncion => $datos];
 
         $respuestaActualizarDatosMeliUsuario = $this->actualizarDatosMeli($vectorAtributosDatosMeli, $idUsuario, $idPropiedad, $nombreTabla, 'envios_meli'); // Guardamos la solicitud en la columna 'envios_meli' para análisis posterior
