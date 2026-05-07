@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Log;
 use Reda\Integraciones\Http\Controllers\General\UsuarioController;
 use Reda\Integraciones\Traits\MercadoLibre\MeliRequestsTrait;
 use DateTime;
+use App\Models\User\UserCarBrand;
+use Reda\Integraciones\Models\MercadoLibre\MarcaAutoMeli;
+use Illuminate\Support\Facades\DB;
 
 class ConfiguracionController extends Controller
 {
@@ -236,4 +239,64 @@ class ConfiguracionController extends Controller
 			return response()->json($respuestaActualizarDatosMeli, $respuestaActualizarDatosMeli['codigo_http']);
 		}
 	}
+    public function sincronizarMarcasMeli()
+    {
+        // 1. Tomamos el token actualizado del usuario de pruebas de Mercado libre
+        $tokenMeli = "APP_USR-6732449785458614-050706-6bd03a8635fe06545536204439c39a7e-1532684552";
+
+        $respuestaVerificarUsuarioConectado = (new UsuarioController())->verificarUsuarioConectado(null, true);
+        $idUsuario = $respuestaVerificarUsuarioConectado['id_usuario_conectado'];
+        $tipoUsuario = $respuestaVerificarUsuarioConectado['tipo_agencia_agente'];
+        $nombreTabla = $this->usuarioTabla($tipoUsuario);
+
+        // 2. Consultar marcas en MLU (Uruguay) para la categoría de Autos y Camionetas
+        // Endpoint: /categories/MLU1744/attributes
+        $respuestaMeli = $this->enviarSolicitudMeli(
+            'categories/MLU1744/attributes',
+            'GET',
+            [],
+            true,
+            $tokenMeli,
+            false,
+            'sincronizar_marcas_meli',
+            $idUsuario,
+            null,
+            $nombreTabla
+        );
+
+        if (!$respuestaMeli['success']) return response()->json($respuestaMeli, 500);
+
+        // 3. Buscar el atributo "BRAND" en la respuesta
+        $marcasMeli = collect($respuestaMeli['respuesta'])->firstWhere('id', 'BRAND')['values'] ?? [];
+
+        $count = 0;
+        foreach ($marcasMeli as $marca) {
+            DB::transaction(function () use ($marca, &$count) {
+                // A. Insertar o recuperar de la tabla original (user_car_brand)
+                // Usamos language_id 180 como se ve en tu SQL
+                $carBrand = UserCarBrand::firstOrCreate(
+                    ['name' => $marca['name']],
+                    ['language_id' => 180]
+                );
+
+                // B. Insertar o actualizar en tu tabla de integración (marcas_autos_melis)
+                MarcaAutoMeli::updateOrCreate(
+                    ['user_car_brand_id' => $carBrand->id],
+                    [
+                        'datos_meli' => [
+                            'meli_id' => $marca['id'],
+                            'nombre_meli' => $marca['name']
+                        ],
+                        'respuesta_meli' => $marca // Guardamos la respuesta completa para referencia
+                    ]
+                );
+                $count++;
+            });
+        }
+
+        return response()->json([
+            'success' => true,
+            'mensaje' => "Se han sincronizado $count marcas correctamente."
+        ]);
+    }
 }
