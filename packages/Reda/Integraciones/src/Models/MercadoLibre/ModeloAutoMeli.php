@@ -5,7 +5,7 @@ namespace Reda\Integraciones\Models\MercadoLibre;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MarcaAutoMeli extends Model
+class ModeloAutoMeli extends Model
 {
     // Definimos la tabla explícitamente
     protected $table = 'modelos_autos_melis';

@@ -529,6 +529,7 @@ class PropertyController extends Controller
     public function getModels(Request $request)
     {
         event(new \Reda\Integraciones\Events\ModelsRequested($request->brand_id));
+        
         $models = UserCarModel::where('brand_id', $request->brand_id)
             ->select('id', 'name')
             ->get();

@@ -279,6 +279,8 @@ class ConfiguracionController extends Controller
             $nombreTabla
         );
 
+        Log::info("sincronizarMarcasMeli, respuestaMeli: " . print_r($respuestaMeli, true));
+
         if (!$respuestaMeli['success']) return response()->json($respuestaMeli, 500);
 
         // 4. Extraer el listado de marcas de la API

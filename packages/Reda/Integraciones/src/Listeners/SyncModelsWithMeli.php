@@ -18,6 +18,8 @@ class SyncModelsWithMeli
 
     public function handle(ModelsRequested $event)
     {
+        Log::info("SyncModelsWithMeli, handle");
+
         $brandId = $event->brand_id;
 
         // 1. Verificar si esta marca tiene un ID de Mercado Libre vinculado
@@ -39,13 +41,21 @@ class SyncModelsWithMeli
 
         // 3. Solicitar modelos a Mercado Libre
         // Usamos el endpoint de top_values para MODEL
-        $url = "catalog_domains/MLU-CARS_AND_VANS/attributes/MODEL/top_values?BRAND={$meliBrandId}";
+        $url = "catalog_domains/MLU-CARS_AND_VANS/attributes/MODEL/top_values";
+
+        $datos = [
+            "known_attributes" => [
+                [
+                    "id" => "BRAND",
+                    "value_id" => $meliBrandId
+                ]
+            ]
+        ]; 
 
         // Obtener datos de conexión para el Trait
         $respuestaVerificarUsuarioConectado = (new UsuarioController())->verificarUsuarioConectado(null, true);
 
         if (!$respuestaVerificarUsuarioConectado['success']) {
-            Log::info("SyncModelsWithMeli, respuestaVerificarUsuarioConectado: " . print_r($respuestaVerificarUsuarioConectado, true));
             return;
         }
 
@@ -56,17 +66,16 @@ class SyncModelsWithMeli
             'id_usuario_agencia' => $respuestaVerificarUsuarioConectado['id_usuario_agencia'],
             'tipo_agencia_agente' => $respuestaVerificarUsuarioConectado['tipo_agencia_agente']
         ];
-
+        
         $respuestaVerificarTokenMeli = (new ConfiguracionController())->verificarTokenMeli(null, $datosUsuarioConectado, true);
 
         if (!$respuestaVerificarTokenMeli['success']) {
-            Log::info("SyncModelsWithMeli, respuestaVerificarTokenMeli: " . print_r($respuestaVerificarTokenMeli, true));
             return;
         }
 
         $token = $respuestaVerificarTokenMeli['token_meli'];
-
-        $res = $this->enviarSolicitudMeli($url, 'GET', [], true, $token, false, 'sync_models_with_meli', $idUsuario, null, $nombreTabla);
+        
+        $res = $this->enviarSolicitudMeli($url, 'POST', $datos, true, $token, false, 'sync_models_with_meli', $idUsuario, null, $nombreTabla);
 
         if ($res['success'] && is_array($res['respuesta'])) {
             foreach ($res['respuesta'] as $modeloMeli) {

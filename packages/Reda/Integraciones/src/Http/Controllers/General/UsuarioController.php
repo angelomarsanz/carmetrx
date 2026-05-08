@@ -154,8 +154,6 @@ class UsuarioController extends Controller
             ];
         }
 
-        Log::info("verificarUsuarioConectado, respuesta: " . print_r($respuesta, true));
-
         if ($respuesta['id_usuario_conectado'] != 0 && $respuesta['tipo_agencia_agente'] != '') {
             $vectorAtributosDatosMeli = [
                 'verificar_usuario_conectado' => [
@@ -174,6 +172,8 @@ class UsuarioController extends Controller
                 $respuesta = $respuestaActualizarDatosMeli;
             }
         }
+
+        Log::info("verificarUsuarioConectado, respuesta: " . print_r($respuesta, true));
 
         return $returnArray ? $respuesta : response()->json($respuesta, $respuesta['codigo_http']);
     }
