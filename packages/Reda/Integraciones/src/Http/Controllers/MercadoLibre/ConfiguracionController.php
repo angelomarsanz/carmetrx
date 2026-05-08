@@ -95,6 +95,7 @@ class ConfiguracionController extends Controller
                             'causas' => '',
                             'token_meli' => $datos['token_meli'],
                             'refresh_token_meli' => $datos['refresh_token_meli'],
+                            'fecha_hora_token_meli' => $datos['fecha_hora_token_meli']
                         ];
                     }
                     else
@@ -220,15 +221,21 @@ class ConfiguracionController extends Controller
             $refreshTokenMeli = $request->input('refresh_token_meli');
         }
 
+        $fechaHoraTokenMeli = $this->fechaHoraActual()['fecha_hora_actual_formato'];
+
         $vectorAtributosDatosMeli = [
             'token_meli' => $tokenMeli,
             'refresh_token_meli' => $refreshTokenMeli,
-            'fecha_hora_token_meli' => $this->fechaHoraActual()['fecha_hora_actual_formato']
+            'fecha_hora_token_meli' => $fechaHoraTokenMeli
         ];
 
         $nombreTabla = $this->usuarioTabla('estate_agency');
 
         $respuestaActualizarDatosMeli = $this->actualizarDatosMeli($vectorAtributosDatosMeli, $idUsuarioAgencia, null, $nombreTabla, 'datos_meli');
+
+        $respuestaActualizarDatosMeli['token_meli'] = $tokenMeli;
+        $respuestaActualizarDatosMeli['refresh_token_meli'] = $refreshTokenMeli;
+        $respuestaActualizarDatosMeli['fecha_hora_token_meli'] = $fechaHoraTokenMeli;
 
 		if ($retornaArray == true)
 		{
@@ -278,7 +285,7 @@ class ConfiguracionController extends Controller
         $marcasMeli = collect($respuestaMeli['respuesta'])->firstWhere('id', 'BRAND')['values'] ?? [];
 
         // --- CARGA DE DATOS EXISTENTES PARA EVITAR DUPLICADOS ---
-        
+
         // Nombres de marcas ya existentes en minúsculas para comparar: ['toyota' => id, ...]
         $marcasExistentesDB = UserCarBrand::all()->pluck('id', 'name')->mapWithKeys(function ($id, $name) {
             return [strtolower(trim($name)) => $id];
@@ -296,7 +303,7 @@ class ConfiguracionController extends Controller
             $nombreLimpio = strtolower(trim($marca['name']));
 
             DB::transaction(function () use ($marca, $nombreLimpio, &$marcasExistentesDB, &$relacionesExistentesMeli, &$nuevasMarcasBase, &$nuevasRelacionesMeli, &$yaExistentes) {
-                
+
                 // PASO A: Asegurar la existencia en la tabla original (user_car_brand)
                 if ($marcasExistentesDB->has($nombreLimpio)) {
                     $brandId = $marcasExistentesDB->get($nombreLimpio);
@@ -323,9 +330,9 @@ class ConfiguracionController extends Controller
                         'meli_id' => $marca['id'],
                         'nombre_meli' => $marca['name']
                     ],
-                    'respuesta_meli' => $marca 
+                    'respuesta_meli' => $marca
                 ]);
-                
+
                 $relacionesExistentesMeli[] = $brandId;
                 $nuevasRelacionesMeli++;
             });

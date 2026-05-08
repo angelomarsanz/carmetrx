@@ -3,6 +3,9 @@
 namespace Reda\Integraciones;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event; // Importante para registrar eventos
+use Reda\Integraciones\Events\ModelsRequested;
+use Reda\Integraciones\Listeners\SyncModelsWithMeli;
 
 class IntegracionesServiceProvider extends ServiceProvider
 {
@@ -41,5 +44,10 @@ class IntegracionesServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/reda-integraciones'),
         ], 'integraciones-lang');
+
+        Event::listen(
+            ModelsRequested::class,
+            SyncModelsWithMeli::class
+        );
     }
 }

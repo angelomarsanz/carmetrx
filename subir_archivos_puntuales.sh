@@ -13,8 +13,9 @@ ARCHIVOS_PHP_PUNTUALES=(
     #"Ninguno"
     "packages/Reda/Integraciones/resources/lang/es.json"
     "packages/Reda/Integraciones/routes/web.php"
+    "app/Http/Controllers/User/PropertyManagement/PropertyController.php"
+    "packages/Reda/Integraciones/src/Events/ModelsRequested.php"
+    "packages/Reda/Integraciones/src/Listeners/SyncModelsWithMeli.php"
+    "packages/Reda/Integraciones/src/IntegracionesServiceProvider.php"
     "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ConfiguracionController.php"
-    "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
-    "packages/Reda/Integraciones/routes/web.php"
-    "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
 )
