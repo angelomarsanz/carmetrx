@@ -18,8 +18,6 @@ class SyncModelsWithMeli
 
     public function handle(ModelsRequested $event)
     {
-        Log::info("SyncModelsWithMeli, handle");
-
         $brandId = $event->brand_id;
 
         // 1. Verificar si esta marca tiene un ID de Mercado Libre vinculado
@@ -56,6 +54,7 @@ class SyncModelsWithMeli
         $respuestaVerificarUsuarioConectado = (new UsuarioController())->verificarUsuarioConectado(null, true);
 
         if (!$respuestaVerificarUsuarioConectado['success']) {
+            Log::info("SyncModelsWithMeli, respuestaVerificarUsuarioConectado: " . print_r($respuestaVerificarUsuarioConectado, true));
             return;
         }
 
@@ -70,6 +69,7 @@ class SyncModelsWithMeli
         $respuestaVerificarTokenMeli = (new ConfiguracionController())->verificarTokenMeli(null, $datosUsuarioConectado, true);
 
         if (!$respuestaVerificarTokenMeli['success']) {
+            Log::info("SyncModelsWithMeli, respuestaVerificarTokenMeli: " . print_r($respuestaVerificarTokenMeli, true));
             return;
         }
 

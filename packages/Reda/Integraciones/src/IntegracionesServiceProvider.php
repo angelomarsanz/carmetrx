@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event; // Importante para registrar eventos
 use Reda\Integraciones\Events\ModelsRequested;
 use Reda\Integraciones\Listeners\SyncModelsWithMeli;
+use Reda\Integraciones\Events\VersionsRequested;
+use Reda\Integraciones\Listeners\SyncVersionsWithMeli;
+
 
 class IntegracionesServiceProvider extends ServiceProvider
 {
@@ -45,9 +48,16 @@ class IntegracionesServiceProvider extends ServiceProvider
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/reda-integraciones'),
         ], 'integraciones-lang');
 
+        // Registro para Modelos
         Event::listen(
             ModelsRequested::class,
             SyncModelsWithMeli::class
+        );
+
+        // Registro para Versiones
+        Event::listen(
+            VersionsRequested::class,
+            SyncVersionsWithMeli::class
         );
     }
 }

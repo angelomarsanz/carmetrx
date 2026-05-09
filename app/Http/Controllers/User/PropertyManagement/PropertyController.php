@@ -528,7 +528,9 @@ class PropertyController extends Controller
 
     public function getModels(Request $request)
     {
+        // Inicio cambios Carmetric - Emitimos evento para sincronizar modelos con Meli antes de obtenerlos de la BD
         event(new \Reda\Integraciones\Events\ModelsRequested($request->brand_id));
+        // Fin cambios Carmetric
         
         $models = UserCarModel::where('brand_id', $request->brand_id)
             ->select('id', 'name')
@@ -539,6 +541,9 @@ class PropertyController extends Controller
 
     public function getVersions(Request $request)
     {
+        // Inicio cambios Carmetric - Emitimos evento para sincronizar versiones con Meli antes de obtenerlas de la BD
+        event(new \Reda\Integraciones\Events\VersionsRequested($request->model_id));
+        // Fin cambios Carmetric
         $versions = UserCarVersion::where('model_id', $request->model_id)
             ->select('id', 'name')
             ->get();

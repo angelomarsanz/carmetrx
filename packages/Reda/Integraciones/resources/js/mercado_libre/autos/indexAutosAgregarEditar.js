@@ -32,7 +32,7 @@ export const indexAutosAgregarEditar = () => {
                                 $.notify({
                                     icon: 'fa fa-exclamation-triangle',
                                     title: '<strong>' + 'Atención' + '</strong>',
-                                    message: window.RedaIntegraciones["No se encontraron modelos para esta marca en Mercado Libre"] || "No se encontraron modelos para esta marca en Mercado Libre.",
+                                    message: window.RedaIntegraciones["No se encontraron modelos para esta marca"] || "No se encontraron modelos para esta marca.",
                                 }, {
                                     type: 'warning',
                                     placement: { from: 'top', align: 'right' },
@@ -45,6 +45,23 @@ export const indexAutosAgregarEditar = () => {
                         } catch (e) {
                             // No hacemos log para no ensuciar la consola del usuario final
                         }
+                    }
+                    if (settings.url.match(/\/get-versions(\?|$)/)) {
+                        try {
+                            let data = xhr.responseJSON || JSON.parse(xhr.responseText);
+                            if (data && data.versions && data.versions.length === 0) {
+                                $.notify({
+                                    icon: 'fa fa-exclamation-triangle',
+                                    title: '<strong>Atención</strong>',
+                                    message: window.RedaIntegraciones["No se encontraron versiones para este modelo"] || "No se encontraron versiones para este modelo.",
+                                }, {
+                                    type: 'warning',
+                                    placement: { from: 'top', align: 'right' },
+                                    delay: 5000,
+                                    z_index: 2000
+                                });
+                            }
+                        } catch (e) {}
                     }
                 });
             });

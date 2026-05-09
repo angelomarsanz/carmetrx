@@ -43,5 +43,6 @@
     "Conexión con Mercado Libre configurada exitosamente" : "Conexión con Mercado Libre configurada exitosamente",
     "El usuario con rol de agencia es el único que puede configurar la conexión con Mercado Libre" : "El usuario con rol de agencia es el único que puede configurar la conexión con Mercado Libre.",
     "No se pudo verificar el usuario conectado" : "No se pudo verificar el usuario conectado.",
-    "No se encontraron modelos para esta marca en Mercado Libre" : "No se encontraron modelos para esta marca en Mercado Libre."
+    "No se encontraron modelos para esta marca" : "No se encontraron modelos para esta marca.",
+    "No se encontraron versiones para este modelo" : "No se encontraron versiones para este modelo."
 }
