@@ -44,5 +44,7 @@
     "El usuario con rol de agencia es el único que puede configurar la conexión con Mercado Libre" : "El usuario con rol de agencia es el único que puede configurar la conexión con Mercado Libre.",
     "No se pudo verificar el usuario conectado" : "No se pudo verificar el usuario conectado.",
     "No se encontraron modelos para esta marca" : "No se encontraron modelos para esta marca.",
-    "No se encontraron versiones para este modelo" : "No se encontraron versiones para este modelo."
+    "No se encontraron versiones para este modelo" : "No se encontraron versiones para este modelo.",
+    "Sincronización de marcas con Mercado Libre finalizada" : "Sincronización de marcas con Mercado Libre finalizada.",
+    "Token de Mercado Libre obtenido y guardado correctamente" : "Token de Mercado Libre obtenido y guardado correctamente."
 }

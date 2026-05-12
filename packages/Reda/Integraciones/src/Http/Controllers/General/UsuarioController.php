@@ -45,58 +45,52 @@ class UsuarioController extends Controller
             if (!$user) {
                 $respuesta = [
                     'success' => false,
-                    'codigo_respuesta' => 1,
-                    'codigo_http' => 401,
-                    'mensaje_respuesta' => __('Usuario no autenticado'),
+                    'message' => 'Usuario no autenticado',
+                    'mensaje_usuario' => __('Usuario no autenticado'),
                     'respuesta' => '',
-                    'error_curl' => '',
-                    'causas'  => '',
                     'id_usuario_administrador' => 0,
                     'id_usuario_agencia' => 0,
                     'id_usuario_agente' => 0,
                     'id_usuario_conectado' => 0,
                     'rol_usuario_conectado' => 0,
-                    'tipo_agencia_agente' => ''
+                    'tipo_agencia_agente' => '',
+                    'code' => 401
                 ];
             }
             else {
                 $respuesta = [
                     'success' => true,
-                    'codigo_respuesta' => 0,
-                    'codigo_http' => 200,
-                    'mensaje_respuesta' => __('Verificación exitosa'),
+                    'message' => 'Verificación exitosa',
+                    'mensaje_usuario' => __('Verificación exitosa'),
                     'respuesta' => '',
-                    'error_curl' => '',
-                    'causas'  => '',
                     'id_usuario_administrador' => 0,
                     'id_usuario_agencia' => $user->id,
                     'id_usuario_agente' => $user->id,
                     'id_usuario_conectado' => $user->id,
                     'rol_usuario_conectado' => 3,
-                    'tipo_agencia_agente' => 'estate_agency'
+                    'tipo_agencia_agente' => 'estate_agency',
+                    'code' => 200
                 ];
                 $idUsuarioConectado = $user->id;
             }
         } elseif ($prefijo && strpos($prefijo, '/agent') !== false) {
             $agente = $this->obtenerAgente();
-            if (is_array($agente) && isset($agente['codigo_respuesta']) && $agente['codigo_respuesta'] !== 0) {
+            if (is_array($agente) && isset($agente['message']) && $agente['message'] !== 'Verificación exitosa') {
                 $respuesta = $agente;
             }
             else {
                 $respuesta = [
                     'success' => true,
-                    'codigo_respuesta' => 0,
-                    'codigo_http' => 200,
-                    'mensaje_respuesta' => __('Verificación exitosa'),
+                    'message' => 'Verificación exitosa',
+                    'mensaje_usuario' => __('Verificación exitosa'),
                     'respuesta' => '',
-                    'error_curl' => '',
-                    'causas'  => '',
                     'id_usuario_administrador' => $agente['id_usuario_administrador'],
                     'id_usuario_agencia' => $agente['id_usuario_agencia'],
                     'id_usuario_agente' => $agente['id_agente_conectado'],
                     'id_usuario_conectado' => $agente['id_agente_conectado'],
                     'rol_usuario_conectado' => $agente['rol_usuario_conectado'],
-                    'tipo_agencia_agente' => $agente['tipo_agencia_agente']
+                    'tipo_agencia_agente' => $agente['tipo_agencia_agente'],
+                    'code' => 200
                 ];
                 $idUsuarioConectado = $agente['id_usuario_agente'];
             }
@@ -105,61 +99,55 @@ class UsuarioController extends Controller
                 $admin = Auth::guard('admin')->user();
                 $respuesta = [
                     'success' => true,
-                    'codigo_respuesta' => 0,
-                    'codigo_http' => 200,
-                    'mensaje_respuesta' => __('Verificación exitosa'),
+                    'message' => 'Verificación exitosa',
+                    'mensaje_usuario' => __('Verificación exitosa'),
                     'respuesta' => '',
-                    'error_curl' => '',
-                    'causas'  => '',
                     'id_usuario_administrador' => $admin->id,
                     'id_usuario_agencia' => 0,
                     'id_usuario_agente' => 0,
                     'id_usuario_conectado' => $admin->id,
                     'rol_usuario_conectado' => 5,
-                    'tipo_agencia_agente' => 'admin'
+                    'tipo_agencia_agente' => 'admin',
+                    'code' => 200
                 ];
                 $idUsuarioConectado = $admin->id;
             } else {
                 $respuesta = [
                     'success' => false,
-                    'codigo_respuesta' => 2,
-                    'codigo_http' => 401,
-                    'mensaje_respuesta' => __('Usuario no autenticado'),
+                    'message' => 'Usuario no autenticado',
+                    'mensaje_usuario' => __('Usuario no autenticado'),
                     'respuesta' => '',
-                    'error_curl' => '',
-                    'causas'  => '',
                     'id_usuario_administrador' => 0,
                     'id_usuario_agencia' => 0,
                     'id_usuario_agente' => 0,
                     'id_usuario_conectado' => 0,
                     'rol_usuario_conectado' => 0,
-                    'tipo_agencia_agente' => ''
+                    'tipo_agencia_agente' => '',
+                    'code' => 401
                 ];
             }
         } else {
             $respuesta = [
                 'success' => false,
-                'codigo_respuesta' => 3,
-                'codigo_http' => 400,
-                'mensaje_respuesta' => __('Valor inválido para prefijo'),
+                'message' => 'Valor inválido para prefijo',
+                'mensaje_usuario' => __('Valor inválido para prefijo'),
                 'respuesta' => '',
-                'error_curl' => '',
-                'causas'  => '',
                 'id_usuario_administrador' => 0,
                 'id_usuario_agencia' => 0,
                 'id_usuario_agente' => 0,
                 'id_usuario_conectado' => 0,
                 'rol_usuario_conectado' => 0,
-                'tipo_agencia_agente' => ''
+                'tipo_agencia_agente' => '',
+                'code' => 400
             ];
         }
 
         if ($respuesta['id_usuario_conectado'] != 0 && $respuesta['tipo_agencia_agente'] != '') {
             $vectorAtributosDatosMeli = [
                 'verificar_usuario_conectado' => [
-                    'codigo_respuesta' => $respuesta['codigo_respuesta'],
-                    'mensaje_respuesta' => $respuesta['mensaje_respuesta'],
-                    'fecha_hora' => $this->fechaHoraActual()['fecha_hora_actual_formato']
+                    'message' => $respuesta['message'],
+                    'fecha_hora' => $this->fechaHoraActual()['fecha_hora_actual_formato'],
+                    'code' => $respuesta['code']
                 ],
             ];
 
@@ -175,7 +163,7 @@ class UsuarioController extends Controller
 
         Log::info("verificarUsuarioConectado, respuesta: " . print_r($respuesta, true));
 
-        return $returnArray ? $respuesta : response()->json($respuesta, $respuesta['codigo_http']);
+        return $returnArray ? $respuesta : response()->json($respuesta, $respuesta['code']);
     }
     public static function obtenerAgente()
     {
@@ -193,51 +181,42 @@ class UsuarioController extends Controller
                     // retornar tanto el id del usuario como el id del agente
                     return [
                         'success' => true,
-                        'codigo_respuesta' => 0,
-                        'codigo_http' => 200,
-                        'mensaje_respuesta' => __('Verificación exitosa'),
+                        'message' => 'Verificación exitosa',
+                        'mensaje_usuario' => __('Verificación exitosa'),
                         'respuesta' => '',
-                        'error_curl' => '',
-                        'causas'  => '',
                         'id_usuario_administrador' => 0,
                         'id_usuario_agencia' => $agent->user_id,
                         'id_usuario_agente' => $agent->id,
                         'rol_usuario_conectado' => 2,
                         'tipo_agencia_agente' => 'estate_agent',
+                        'code' => 200
                     ];
                 }
                 // Si no coincide el tenant, enviar vector con código de error
                 return [
                     'success' => false,
-                    'codigo_respuesta' => 1,
-                    'codigo_http' => 400,
-                    'mensaje_respuesta' => __('El agente no pertenece al tenant actual'),
+                    'message' => 'El agente no pertenece al tenant actual',
+                    'mensaje_usuario' => __('El agente no pertenece al tenant actual'),
                     'respuesta' => '',
-                    'error_curl' => '',
-                    'causas' => ''
+                    'code' => 400
                 ];
             }
 
             // Si no existe getUser(), enviar vector con código de error
             return [
                 'success' => false,
-                'codigo_respuesta' => 2,
-                'codigo_http' => 404,
-                'mensaje_respuesta' => __('No se pudo obtener el tenant actual'),
+                'message' => 'No se pudo obtener el tenant actual',
+                'mensaje_usuario' => __('No se pudo obtener el tenant actual'),
                 'respuesta' => '',
-                'error_curl' => '',
-                'causas' => ''
+                'code' => 404
             ];
         } catch (\Exception $e) {
-            // En caso de error, enviar vector con código de error y mensaje_respuesta
             return [
                 'success' => false,
-                'codigo_respuesta' => 3,
-                'codigo_http' => 404,
-                'mensaje_respuesta' => __('Error al obtener el agente: ') . $e->getMessage(),
+                'message' => 'Error al obtener el agente',
+                'mensaje_usuario' => __('Error al obtener el agente: ') . $e->getMessage(),
                 'respuesta' => '',
-                'error_curl' => '',
-                'causas' => ''                
+                'code' => 404                
             ];
         }
     }

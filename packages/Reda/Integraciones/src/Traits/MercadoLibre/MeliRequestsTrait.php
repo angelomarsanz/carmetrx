@@ -57,8 +57,7 @@ trait MeliRequestsTrait
             'nombreTabla' => $nombreTabla];
 
         Log::info("enviarSolicitudMeli, parametrosRecibidos: " . print_r($parametrosRecibidos, true));
-        
-        
+                
         $vectorAtributosDatosMeli = [ 'solicitud_'.$nombreFuncion => $datos];
 
         $respuestaActualizarDatosMeliUsuario = $this->actualizarDatosMeli($vectorAtributosDatosMeli, $idUsuario, $idPropiedad, $nombreTabla, 'envios_meli'); // Guardamos la solicitud en la columna 'envios_meli' para análisis posterior
@@ -76,12 +75,12 @@ trait MeliRequestsTrait
             if (empty($token_acceso)) {
                 return [
                     'success' => false,
-                    'codigo_respuesta' => 1,
-                    'codigo_http' => 401,
-                    'mensaje_respuesta' => __('Token de acceso no proporcionado'),
+                    'message' => 'token no proporcionado',
+                    'mensaje_usuario' => __('Token de acceso no proporcionado'),
                     'respuesta' => '',
                     'error_curl' => '',
-                    'causas' => ''
+                    'causas' => '',
+                    'code' => 401,
                 ];
             }
             $encabezados[] = 'Authorization: Bearer ' . $token_acceso;
@@ -123,13 +122,12 @@ trait MeliRequestsTrait
         if ($exito_http) {
             return [
                 'success' => true,
-                'codigo_respuesta' => 0,
-                'codigo_http' => $codigo_http,
-                'mensaje_respuesta' => __('Proceso exitoso'),
+                'message' => 'Proceso exitoso',
+                'mensaje_usuario' => __('Proceso exitoso'),
                 'respuesta' => $respuesta_decodificada ?: $respuesta_raw,
                 'error_curl' => $error_curl,
-                'causas' => ''
-
+                'causas' => '',
+                'code' => $codigo_http,
             ];
         }
 
@@ -160,12 +158,12 @@ trait MeliRequestsTrait
 
         return [
             'success' => false,
-            'codigo_respuesta' => 2,
-            'codigo_http' => $codigo_http,
-            'mensaje_respuesta' => $mensaje_principal,
+            'message' => 'Error en la solicitud a Mercado Libre',
+            'mensaje_usuario' => $mensaje_principal,
             'respuesta' => $respuesta_decodificada ?: $respuesta_raw,
             'error_curl' => $error_curl,
-            'causas' => $errores_detallados
+            'causas' => $errores_detallados,
+            'code' => $codigo_http,
         ];
     }
     public function fechaHoraActual()
@@ -208,12 +206,12 @@ trait MeliRequestsTrait
             if (!empty($datosFaltantes)) {
                 return [
                     'success' => false,
-                    'codigo_respuesta' => 2,
-                    'codigo_http' => 422,
-                    'mensaje_respuesta' => __('Error: Faltan los siguientes datos:'),
+                    'message' => 'Faltan datos requeridos',
+                    'mensaje_usuario' => __('Error: Faltan los siguientes datos:'),
                     'respuesta' => '',
                     'error_curl' => '',
-                    'causas' => $datosFaltantes
+                    'causas' => $datosFaltantes,
+                    'code' => 422,
                 ];
             }
             // 2. Determinar dinámicamente el Modelo según el tipo de usuario
@@ -239,12 +237,12 @@ trait MeliRequestsTrait
                 default:
                     return [
                         'success' => false,
-                        'codigo_respuesta' => 3,
-                        'codigo_http' => 400,
-                        'mensaje_respuesta' => __('Error: Nombre de tabla no reconocida (') . $nombreTabla . ').',
+                        'message' => 'Nombre de tabla no reconocida',
+                        'mensaje_usuario' => __('Error: Nombre de tabla no reconocida (') . $nombreTabla . ').',
                         'respuesta' => '',
                         'error_curl' => '',
-                        'causas' => ''
+                        'causas' => '',
+                        'code' => 400,
                     ];
             }
 
@@ -269,12 +267,12 @@ trait MeliRequestsTrait
 
             return [
                 'success' => true,
-                'codigo_respuesta' => 0,
-                'codigo_http' => 200,
-                'mensaje_respuesta' => __('Atributos actualizados correctamente en ') . class_basename($modeloClase),
+                'message' => 'Datos actualizados correctamente',
+                'mensaje_usuario' => __('Atributos actualizados correctamente en ') . class_basename($modeloClase),
                 'respuesta' => '',
                 'error_curl' => '',
-                'causas' => ''
+                'causas' => '',
+                'code' => 200,
             ];
 
         } catch (\Exception $e) {
@@ -283,12 +281,12 @@ trait MeliRequestsTrait
 
             return [
                 'success' => false,
-                'codigo_respuesta' => 4,
-                'codigo_http' => 500,
-                'mensaje_respuesta' => _('Error interno al procesar la actualización: ') . $e->getMessage(),
+                'message' => 'Error interno al procesar la actualización',
+                'mensaje_usuario' => _('Error interno al procesar la actualización: ') . $e->getMessage(),
                 'respuesta' => '',
                 'error_curl' => '',
-                'causas' => ''
+                'causas' => '',
+                'code' => 500,
             ];
         }
     }

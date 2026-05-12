@@ -72,7 +72,7 @@ export const indexConfiguracionesMercadoLibre = () => {
             async function solicitarTokenML() {
                 $(containerId).html(verificandoUsuarioConectado);
                 const respuestaVerificarUsuarioConectado = await verificarUsuarioConectado();
-                if (respuestaVerificarUsuarioConectado.codigo_respuesta == 0) {
+                if (respuestaVerificarUsuarioConectado.message == 'Verificación exitosa') {
                     if (respuestaVerificarUsuarioConectado.tipo_agencia_agente != 'estate_agency') {
                         $(containerId).html(usuarioAgenciaUnicamenteConfiguraMeli);
                         return;
@@ -88,7 +88,7 @@ export const indexConfiguracionesMercadoLibre = () => {
 
                         const respuestaObtenerTokenMeli = await obtenerTokenMeli($("#codigo_temporal").val(), respuestaVerificarUsuarioConectado.id_usuario_conectado, respuestaVerificarUsuarioConectado.tipo_agencia_agente);
 
-                        if (respuestaObtenerTokenMeli.success && respuestaObtenerTokenMeli.codigo_respuesta == 0) {
+                        if (respuestaObtenerTokenMeli.success && respuestaObtenerTokenMeli.message == 'Token obtenido correctamente') {
                             // --- CASO ÉXITO ---
                             $(containerId).html(conexionMeliConfiguradaExitosamente);
                         }
@@ -102,10 +102,10 @@ export const indexConfiguracionesMercadoLibre = () => {
                                     </div>
                                     <div class="small">
                                         <span class="d-block">
-                                            <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaObtenerTokenMeli.codigo_respuesta}
+                                            <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaObtenerTokenMeli.code}
                                         </span>
                                         <span class="d-block">
-                                            <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaObtenerTokenMeli.mensaje_respuesta}
+                                            <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaObtenerTokenMeli.mensaje_usuario}
                                         </span>
                                         ${htmlCausas}
                                     </div>
@@ -126,10 +126,10 @@ export const indexConfiguracionesMercadoLibre = () => {
                         </div>
                         <div class="small">
                             <span class="d-block">
-                                <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.codigo_respuesta}
+                                <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.code}
                             </span>
                             <span class="d-block">
-                                <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.mensaje_respuesta}
+                                <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.mensaje_usuario}
                             </span>
                             ${causasHtml}
                         </div>
@@ -142,7 +142,7 @@ export const indexConfiguracionesMercadoLibre = () => {
             async function buscarTokenBaseDatos() {
                 $(containerId).html(verificandoUsuarioConectado);
                 const respuestaVerificarUsuarioConectado = await verificarUsuarioConectado();
-                if (respuestaVerificarUsuarioConectado.codigo_respuesta == 0) {
+                if (respuestaVerificarUsuarioConectado.message == 'Verificación exitosa') {
                     if (respuestaVerificarUsuarioConectado.tipo_agencia_agente != 'estate_agency') {
                         $(containerId).html(usuarioAgenciaUnicamenteConfiguraMeli);
                         return;
@@ -158,14 +158,14 @@ export const indexConfiguracionesMercadoLibre = () => {
                             tipo_agencia_agente: respuestaVerificarUsuarioConectado.tipo_agencia_agente
                         };
                         const respuestaVerificarToken = await verificarTokenMeli(datos_usuario_conectado);
-                        let codigo_respuesta_verificar_token = respuestaVerificarToken.codigo_respuesta;
-                        let mensaje_respuesta_verificar_token = respuestaVerificarToken.mensaje_respuesta;
+                        let message_verificar_token = respuestaVerificarToken.message;
+                        let mensaje_usuario_verificar_token = respuestaVerificarToken.mensaje_usuario;
                         token_meli = respuestaVerificarToken.token_meli;
                         refresh_token_meli = respuestaVerificarToken.refresh_token_meli;
-                        if (codigo_respuesta_verificar_token == 0) {
+                        if (message_verificar_token == 'Token recuperado con éxito' || message_verificar_token == 'Token obtenido correctamente') {
                             $(containerId).html(conexionMeliVerificadaExitosamente);
                         }
-                        else if (codigo_respuesta_verificar_token == 2) {
+                        else if (message_verificar_token == 'No se encontró el token') {
                             $(containerId).html(configurarConexionMeli);
                         }
                         else {
@@ -177,10 +177,10 @@ export const indexConfiguracionesMercadoLibre = () => {
                                     </div>
                                     <div class="small">
                                         <span class="d-block">
-                                            <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaVerificarToken.codigo_respuesta}
+                                            <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaVerificarToken.code}
                                         </span>
                                         <span class="d-block">
-                                            <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaVerificarToken.mensaje_respuesta}
+                                            <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaVerificarToken.mensaje_usuario}
                                         </span>
                                         ${htmlCausas}
                                     </div>
@@ -199,10 +199,10 @@ export const indexConfiguracionesMercadoLibre = () => {
                         </div>
                         <div class="small">
                             <span class="d-block">
-                                <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.codigo_respuesta}
+                                <strong>${window.RedaIntegraciones["Código de respuesta"] || "Código de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.code}
                             </span>
                             <span class="d-block">
-                                <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.mensaje_respuesta}
+                                <strong>${window.RedaIntegraciones["Mensaje de respuesta"] || "Mensaje de respuesta"}:</strong> ${respuestaVerificarUsuarioConectado.mensaje_usuario}
                             </span>
                             ${causasHtml}
                         </div>

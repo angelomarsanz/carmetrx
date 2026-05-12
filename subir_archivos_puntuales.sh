@@ -12,10 +12,12 @@
 ARCHIVOS_PHP_PUNTUALES=(
     #"Ninguno"
     "packages/Reda/Integraciones/resources/lang/es.json"
-    "packages/Reda/Integraciones/routes/web.php"
-    "packages/Reda/Integraciones/src/Events/VersionsRequested.php"
-    "packages/Reda/Integraciones/src/Listeners/SyncVersionsWithMeli.php"
-    "packages/Reda/Integraciones/src/IntegracionesServiceProvider.php"
-    "app/Http/Controllers/User/PropertyManagement/PropertyController.php"
-    "packages/Reda/Integraciones/resources/js/mercado_libre/autos/indexAutosAgregarEditar.js"
+
+    "packages/Reda/Integraciones/resources/js/mercado_libre/configuraciones/indexConfiguracionesMercadoLibre.js"
+    "packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarUsuarioConectado.js"
+    "packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarTokenMeli.js"
+    "packages/Reda/Integraciones/resources/js/mercado_libre/generales/obtenerTokenMeli.js"
+    "packages/Reda/Integraciones/src/Http/Controllers/General/UsuarioController.php"
+    "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ConfiguracionController.php"
+    "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
 )

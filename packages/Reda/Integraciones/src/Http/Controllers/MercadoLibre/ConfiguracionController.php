@@ -38,14 +38,14 @@ class ConfiguracionController extends Controller
         if (!$idUsuario) {
             $respuesta = [
                 'success' => false,
-                'codigo_respuesta' => 1,
-                'codigo_http' => 422,
-                'mensaje_respuesta' => __('ID de usuario no proporcionado para verificar el token de Mercado Libre'),
+                'message' => 'ID de usuario no proporcionado',
+                'mensaje_usuario' => __('ID de usuario no proporcionado para verificar el token de Mercado Libre'),
                 'respuesta' => '',
                 'error_curl' => '',
                 'causas' => '',
                 'token_meli' => '',
-                'refresh_token_meli' => ''
+                'refresh_token_meli' => '',
+                'code' => 422,
             ];
         }
         else {
@@ -87,15 +87,15 @@ class ConfiguracionController extends Controller
                     {
                         $respuesta = [
                             'success' => true,
-                            'codigo_respuesta' => 0,
-                            'codigo_http' => 200,
-                            'mensaje_respuesta' => __('Token recuperado con éxito'),
+                            'message' => 'Token recuperado con éxito',
+                            'mensaje_usuario' => __('Token recuperado con éxito'),
                             'respuesta' => '',
                             'error_curl' => '',
                             'causas' => '',
                             'token_meli' => $datos['token_meli'],
                             'refresh_token_meli' => $datos['refresh_token_meli'],
-                            'fecha_hora_token_meli' => $datos['fecha_hora_token_meli']
+                            'fecha_hora_token_meli' => $datos['fecha_hora_token_meli'],
+                            'code' => 200,
                         ];
                     }
                     else
@@ -106,28 +106,28 @@ class ConfiguracionController extends Controller
                 else {
                     $respuesta = [
                         'success' => false,
-                        'codigo_respuesta' => 2,
-                        'codigo_http' => 404,
-                        'mensaje_respuesta' => __('No se encontró el token de Mercado Libre para este usuario'),
+                        'message' => 'No se encontró el token',
+                        'mensaje_usuario' => __('No se encontró el token de Mercado Libre para este usuario'),
                         'respuesta' => '',
                         'error_curl' => '',
                         'causas' => '',
                         'token_meli' => '',
-                        'refresh_token_meli' => ''
+                        'refresh_token_meli' => '',
+                        'code' => 404,
                     ];
                 }
             }
             else {
                 $respuesta = [
                     'success' => false,
-                    'codigo_respuesta' => 2,
-                    'codigo_http' => 404,
-                    'mensaje_respuesta' => __('No se encontró el token de Mercado Libre para este usuario'),
+                    'message' => 'No se encontró el token',
+                    'mensaje_usuario' => __('No se encontró el token de Mercado Libre para este usuario'),
                     'respuesta' => '',
                     'error_curl' => '',
                     'causas' => '',
                     'token_meli' => '',
-                    'refresh_token_meli' => ''
+                    'refresh_token_meli' => '',
+                    'code' => 404,
                 ];
             }
         }
@@ -138,9 +138,9 @@ class ConfiguracionController extends Controller
             {
                 $vectorAtributosDatosMeli = [
                     'verificar_token_meli' => [
-                        'codigo_respuesta' => $respuesta['codigo_respuesta'],
-                        'mensaje_respuesta' => $respuesta['mensaje_respuesta'],
-                        'fecha_hora' => $this->fechaHoraActual()['fecha_hora_actual_formato']
+                        'message' => $respuesta['message'],
+                        'fecha_hora' => $this->fechaHoraActual()['fecha_hora_actual_formato'],
+                        'code' => $respuesta['code']
                     ]
                 ];
 
@@ -159,7 +159,7 @@ class ConfiguracionController extends Controller
             return $respuesta;
         }
         else {
-            return response()->json($respuesta, $respuesta['codigo_http']);
+            return response()->json($respuesta, $respuesta['code']);
         }
     }
     public function obtenerTokenMeli(?Request $request, $accion = null, $codigoRefreshToken = null, $retornaArray = false, $idUsuario = null, $tipoUsuario = null)
@@ -193,7 +193,18 @@ class ConfiguracionController extends Controller
         if ($respuestaEnviarSolicitudMeli['success']) {
             $tokenMeli = $respuestaEnviarSolicitudMeli['respuesta']['access_token'];
             $refreshTokenMeli = $respuestaEnviarSolicitudMeli['respuesta']['refresh_token'];
-            $respuesta = $this->guardarTokenMeli(null, $tokenMeli, $refreshTokenMeli, $retornaArray = true);
+            $respuestaGuardarTokenMeli = $this->guardarTokenMeli(null, $tokenMeli, $refreshTokenMeli, $retornaArray = true);
+            if ($respuestaGuardarTokenMeli['success']) {
+                $respuesta = [
+                    'success' => true,
+                    'message' => 'Token obtenido correctamente',
+                    'mensaje_usuario' => __('Token de Mercado Libre obtenido y guardado correctamente'),
+                    'respuesta' => '',
+                    'code' => 200,
+                ];
+            } else {
+                $respuesta = $respuestaGuardarTokenMeli;
+            }
         }
         else
         {
@@ -206,7 +217,7 @@ class ConfiguracionController extends Controller
         }
         else
         {
-            return response()->json($respuesta, $respuesta['codigo_http']);
+            return response()->json($respuesta, $respuesta['code']);
         }
     }
 
@@ -243,7 +254,7 @@ class ConfiguracionController extends Controller
 		}
 		else
 		{
-			return response()->json($respuestaActualizarDatosMeli, $respuestaActualizarDatosMeli['codigo_http']);
+			return response()->json($respuestaActualizarDatosMeli, $respuestaActualizarDatosMeli['code']);
 		}
 	}
     public function sincronizarMarcasMeli(Request $request, $token = null)
@@ -259,7 +270,7 @@ class ConfiguracionController extends Controller
         $respuestaVerificarUsuarioConectado = (new UsuarioController())->verificarUsuarioConectado(null, true);
 
         if (!$respuestaVerificarUsuarioConectado['success']) {
-            return response()->json(['success' => false, 'mensaje' => __('No se pudo verificar el usuario conectado'), 'respuestaVerificarUsuarioConectado' => $respuestaVerificarUsuarioConectado], $respuestaVerificarUsuarioConectado['codigo_http']);
+            return response()->json(['success' => false, 'mensaje' => __('No se pudo verificar el usuario conectado'), 'respuestaVerificarUsuarioConectado' => $respuestaVerificarUsuarioConectado], $respuestaVerificarUsuarioConectado['code']);
         }
 
         $idUsuario = $respuestaVerificarUsuarioConectado['id_usuario_conectado'];
@@ -342,12 +353,14 @@ class ConfiguracionController extends Controller
 
         return response()->json([
             'success' => true,
-            'mensaje' => "Sincronización semestral finalizada.",
-            'resultado' => [
+            'message' => "Sincronización finalizada.",
+            'mensaje_usuario' => __('Sincronización de marcas con Mercado Libre finalizada'),
+            'respuesta' => [
                 'marcas_nuevas_en_proyecto' => $nuevasMarcasBase,
                 'nuevas_vinculaciones_con_meli' => $nuevasRelacionesMeli,
                 'marcas_que_ya_estaban_al_dia' => $yaExistentes
-            ]
-        ]);
+            ],
+            'code' => 200
+        ], 200);
     }
 }
