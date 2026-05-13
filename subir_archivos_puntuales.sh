@@ -13,11 +13,13 @@ ARCHIVOS_PHP_PUNTUALES=(
     #"Ninguno"
     "packages/Reda/Integraciones/resources/lang/es.json"
 
-    "packages/Reda/Integraciones/resources/js/mercado_libre/configuraciones/indexConfiguracionesMercadoLibre.js"
-    "packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarUsuarioConectado.js"
-    "packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarTokenMeli.js"
-    "packages/Reda/Integraciones/resources/js/mercado_libre/generales/obtenerTokenMeli.js"
-    "packages/Reda/Integraciones/src/Http/Controllers/General/UsuarioController.php"
+    #"packages/Reda/Integraciones/resources/js/mercado_libre/configuraciones/indexConfiguracionesMercadoLibre.js"
+    #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarUsuarioConectado.js"
+    #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarTokenMeli.js"
+    #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/obtenerTokenMeli.js"
+    #"packages/Reda/Integraciones/src/Http/Controllers/General/UsuarioController.php"
     "packages/Reda/Integraciones/src/Http/Controllers/MercadoLibre/ConfiguracionController.php"
-    "packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
+    #"packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
+
+    "packages/Reda/Integraciones/src/Listeners/SyncModelsWithMeli.php"
 )

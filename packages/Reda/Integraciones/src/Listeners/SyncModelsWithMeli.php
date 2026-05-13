@@ -24,82 +24,100 @@ class SyncModelsWithMeli
         $marcaMeli = MarcaAutoMeli::where('user_car_brand_id', $brandId)->first();
 
         if (!$marcaMeli || !isset($marcaMeli->datos_meli['meli_id'])) {
-            return; // No podemos hacer nada si la marca no es de Meli
+            return;
         }
 
         $meliBrandId = $marcaMeli->datos_meli['meli_id'];
 
-        // 2. ¿Ya tenemos modelos para esta marca?
-        // Si ya hay muchos, quizás no necesitemos llamar a la API cada vez
-        $existeCarga = ModeloAutoMeli::whereHas('userCarModel', function($q) use ($brandId) {
-            $q->where('brand_id', $brandId);
-        })->exists();
+        // Recuperamos los registros completos para poder decodificar el JSON en memoria
+        $modelosMeliExistentesIds = ModeloAutoMeli::whereHas('userCarModel', function($q) use ($brandId) {
+                $q->where('brand_id', $brandId);
+            })
+            ->get()
+            ->map(function ($modelo) {
+                // Obtenemos el meli_id desde el array datos_meli
+                return $modelo->datos_meli['meli_id'] ?? null;
+            })
+            ->filter()
+            ->toArray();
 
-        if ($existeCarga) return; // Ya sincronizado anteriormente
+        // Cargamos los IDs vinculados para evitar el error 1062 de duplicidad
+        $idsYaVinculados = ModeloAutoMeli::pluck('user_car_model_id')->toArray();
 
-        // 3. Solicitar modelos a Mercado Libre
-        // Usamos el endpoint de top_values para MODEL
+        // Solicitar modelos a Mercado Libre
         $url = "catalog_domains/MLU-CARS_AND_VANS/attributes/MODEL/top_values";
-
         $datos = [
             "known_attributes" => [
-                [
-                    "id" => "BRAND",
-                    "value_id" => $meliBrandId
-                ]
+                ["id" => "BRAND", "value_id" => $meliBrandId]
             ]
-        ]; 
+        ];
 
-        // Obtener datos de conexión para el Trait
+        // Verificación de conexión y tokens [cite: 18]
         $respuestaVerificarUsuarioConectado = (new UsuarioController())->verificarUsuarioConectado(null, true);
-
-        if (!$respuestaVerificarUsuarioConectado['success']) {
-            Log::info("SyncModelsWithMeli, respuestaVerificarUsuarioConectado: " . print_r($respuestaVerificarUsuarioConectado, true));
-            return;
-        }
+        if (!$respuestaVerificarUsuarioConectado['success']) return;
 
         $idUsuario = $respuestaVerificarUsuarioConectado['id_usuario_conectado'];
         $nombreTabla = $this->usuarioTabla($respuestaVerificarUsuarioConectado['tipo_agencia_agente']);
-
         $datosUsuarioConectado = [
             'id_usuario_agencia' => $respuestaVerificarUsuarioConectado['id_usuario_agencia'],
             'tipo_agencia_agente' => $respuestaVerificarUsuarioConectado['tipo_agencia_agente']
         ];
-        
-        $respuestaVerificarTokenMeli = (new ConfiguracionController())->verificarTokenMeli(null, $datosUsuarioConectado, true);
 
-        if (!$respuestaVerificarTokenMeli['success']) {
-            Log::info("SyncModelsWithMeli, respuestaVerificarTokenMeli: " . print_r($respuestaVerificarTokenMeli, true));
-            return;
-        }
+        $respuestaVerificarTokenMeli = (new ConfiguracionController())->verificarTokenMeli(null, $datosUsuarioConectado, true);
+        if (!$respuestaVerificarTokenMeli['success']) return;
 
         $token = $respuestaVerificarTokenMeli['token_meli'];
-        
+
         $res = $this->enviarSolicitudMeli($url, 'POST', $datos, true, $token, false, 'sync_models_with_meli', $idUsuario, null, $nombreTabla);
+
+        Log::info("SyncModelsWithMeli, res: " . print_r($res, true));
 
         if ($res['success'] && is_array($res['respuesta'])) {
             foreach ($res['respuesta'] as $modeloMeli) {
+                $meliId = $modeloMeli['id'];
                 $nombre = $modeloMeli['name'];
 
-                DB::transaction(function () use ($brandId, $nombre, $modeloMeli) {
-                    // Crear en la tabla original
-                    $nuevoModelo = UserCarModel::firstOrCreate(
-                        ['brand_id' => $brandId, 'name' => $nombre],
-                        ['language_id' => 180]
-                    );
+                Log::info("SyncModelsWithMeli, meliId: " . $meliId . ", nombre: " . $nombre);
 
-                    // Vincular en nuestra tabla de integración
-                    ModeloAutoMeli::updateOrCreate(
-                        ['user_car_model_id' => $nuevoModelo->id],
-                        [
+                // Si ya conocemos este ID de MeLi, no hacemos NADA
+                if (in_array($meliId, $modelosMeliExistentesIds)) {
+                    continue;
+                }
+
+                try {
+                    DB::transaction(function () use ($brandId, $nombre, $meliId, $modeloMeli, &$idsYaVinculados) {
+                        // MySQL encontrará "Sedan" aunque busquemos "Sedán" por la colación
+                        $nuevoModelo = UserCarModel::firstOrCreate(
+                            ['brand_id' => $brandId, 'name' => $nombre],
+                            ['language_id' => 180]
+                        );
+
+                        // Si el ID ya fue vinculado en esta ejecución (caso Sedan/Sedán), saltar
+                        if (in_array($nuevoModelo->id, $idsYaVinculados)) {
+                            return;
+                        }
+
+                        ModeloAutoMeli::create([
+                            'user_car_model_id' => $nuevoModelo->id,
                             'datos_meli' => [
-                                'meli_id' => $modeloMeli['id'],
+                                'meli_id' => $meliId,
                                 'nombre_meli' => $nombre
                             ],
                             'respuesta_meli' => $modeloMeli
-                        ]
-                    );
-                });
+                        ]);
+
+                        // Actualizamos el array en memoria para el siguiente ciclo
+                        $idsYaVinculados[] = $nuevoModelo->id;
+                    });
+                } catch (QueryException $e) {
+                    // Si el error es de duplicidad (1062), lo ignoramos silenciosamente
+                    if ($e->errorInfo[1] == 1062) {
+                        Log::info("SyncModelsWithMeli: Se ignoró vínculo duplicado para $nombre (ID Carmetric: " . ($nuevoModelo->id ?? 'N/A') . ")");
+                        continue;
+                    }
+                    // Si es otro tipo de error, lo relanzamos
+                    throw $e;
+                }
             }
         }
     }

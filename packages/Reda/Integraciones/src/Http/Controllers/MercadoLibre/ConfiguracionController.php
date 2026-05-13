@@ -200,6 +200,10 @@ class ConfiguracionController extends Controller
                     'message' => 'Token obtenido correctamente',
                     'mensaje_usuario' => __('Token de Mercado Libre obtenido y guardado correctamente'),
                     'respuesta' => '',
+                    'error_curl' => '',
+                    'causas' => '',
+                    'token_meli' => $tokenMeli,
+                    'refresh_token_meli' => $refreshTokenMeli,
                     'code' => 200,
                 ];
             } else {
