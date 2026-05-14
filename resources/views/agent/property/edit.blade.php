@@ -531,13 +531,14 @@
 
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>{{ __('Share this car') }}</label>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="share" id="shareCar" value="1" {{ $property->shared == 1 ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="shareCar">{{ __('Share this car') }}</label>
-                                            </div>
+                                            <label class="d-block">
+                                                <input type="checkbox" name="share" id="shareCar" value="1"
+                                                    {{ $property->shared == 1 ? 'checked' : '' }}>
+                                                {{ __('Share this car') }}
+                                            </label>
                                         </div>
                                     </div>
+
 
                                     <div class="col-lg-3">
                                         <div class="form-group">
@@ -923,6 +924,10 @@
         var values = "{!! $values !!}";
         var stateUrl = "{{ route('agent.property_specification.get_state_cities', getParam()) }}";
         var cityUrl = "{{ route('agent.property_specification.get_cities', getParam()) }}";
+        // Inicio cambios Carmetric
+        var modelUrl = "{{ route('agent.property_management.get_models', getParam()) }}";
+        var versionUrl = "{{ route('agent.property_management.get_versions', getParam()) }}";
+        // Fin cambios Carmetric
         var storeUrl =
             "{{ route('agent.property.imagesstore', getParam()) }}";
         var removeUrl = "{{ route('agent.property.imagermv', getParam()) }}";

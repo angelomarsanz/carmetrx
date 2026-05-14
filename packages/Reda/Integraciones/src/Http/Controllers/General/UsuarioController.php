@@ -86,8 +86,8 @@ class UsuarioController extends Controller
                     'respuesta' => '',
                     'id_usuario_administrador' => $agente['id_usuario_administrador'],
                     'id_usuario_agencia' => $agente['id_usuario_agencia'],
-                    'id_usuario_agente' => $agente['id_agente_conectado'],
-                    'id_usuario_conectado' => $agente['id_agente_conectado'],
+                    'id_usuario_agente' => $agente['id_usuario_agente'],
+                    'id_usuario_conectado' => $agente['id_usuario_conectado'],
                     'rol_usuario_conectado' => $agente['rol_usuario_conectado'],
                     'tipo_agencia_agente' => $agente['tipo_agencia_agente'],
                     'code' => 200
@@ -187,6 +187,7 @@ class UsuarioController extends Controller
                         'id_usuario_administrador' => 0,
                         'id_usuario_agencia' => $agent->user_id,
                         'id_usuario_agente' => $agent->id,
+                        'id_usuario_conectado' => $agent->id,
                         'rol_usuario_conectado' => 2,
                         'tipo_agencia_agente' => 'estate_agent',
                         'code' => 200

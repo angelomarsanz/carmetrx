@@ -12,6 +12,7 @@
 ARCHIVOS_PHP_PUNTUALES=(
     #"Ninguno"
     "packages/Reda/Integraciones/resources/lang/es.json"
+    #".gitignore"
 
     #"packages/Reda/Integraciones/resources/js/mercado_libre/configuraciones/indexConfiguracionesMercadoLibre.js"
     #"packages/Reda/Integraciones/resources/js/mercado_libre/generales/verificarUsuarioConectado.js"
@@ -22,5 +23,13 @@ ARCHIVOS_PHP_PUNTUALES=(
     #"packages/Reda/Integraciones/src/Traits/MercadoLibre/MeliRequestsTrait.php"
 
     #"packages/Reda/Integraciones/src/Listeners/SyncModelsWithMeli.php"
-    "packages/Reda/Integraciones/src/Listeners/SyncVersionsWithMeli.php"
+    #"packages/Reda/Integraciones/src/Listeners/SyncVersionsWithMeli.php"
+    #"routes/agent.php"
+    #"app/Http/Controllers/User/PropertyManagement/PropertyController.php"
+    #"resources/views/user/property-management/create.blade.php"
+    #"resources/views/user/property-management/edit.blade.php"
+    "app/Http/Controllers/Agent/PropertyController.php"
+    #"resources/views/agent/property/type.blade.php"
+    #"resources/views/agent/property/create.blade.php"
+    #"resources/views/agent/property/edit.blade.php"
 )

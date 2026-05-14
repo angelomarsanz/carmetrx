@@ -31,6 +31,7 @@ use App\Models\User\UserCarVersion;
 use App\Http\Requests\PropertyManagement\PropertyStoreRequest;
 use App\Traits\Tenant\Frontend\Language as TenantFrontendLanguage;
 use App\Http\Requests\PropertyManagement\PropertyUpdateRequest;
+use Illuminate\Support\Facades\Log;
 
 class PropertyController extends Controller
 {
@@ -192,6 +193,8 @@ class PropertyController extends Controller
                 $videoImage = UploadFile::store('assets/img/property/video/', $request->video_image);
             }
 
+            Log::info("PropertyController, store, request->share: " . $request->share);
+
             $property = Property::create([
                 'user_id' => $agent->user_id,
                 'agent_id' =>  $agent->id,
@@ -217,7 +220,11 @@ class PropertyController extends Controller
                 'model_id' => $request->model_id,
                 'version_id' => $request->version_id ?? null,
                 'transmision' => $request->transmision ?? null,
-                'color' => $request->color ?? null
+                'color' => $request->color ?? null,
+                // Inicio cambios Carmetric
+                'traction' => $request->traction ?? null,
+                'shared' => $request->share ? 1 : 0
+                // Fin cambios Carmetric
             ]);
 
             $slders = $request->slider_images;
@@ -357,6 +364,8 @@ class PropertyController extends Controller
                     $videoImage = UploadFile::update('assets/img/property/video/', $request->video_image, $property->video_image);
                 }
 
+                Log::info("PropertyController, update, request->share: " . $request->share);
+
                 $property->update([
                     'category_id' => $request->category_id,
                     'country_id' => $request->country_id,
@@ -368,8 +377,6 @@ class PropertyController extends Controller
                     'price' => $request->price,
                     'purpose' => $request->purpose,
                     'type' => $request->type,
-                    'beds' => $request->beds,
-                    'bath' => $request->bath,
                     'area' => $request->area,
                     'video_url' => $request->video_url,
                     'status' => $request->status,
@@ -383,6 +390,10 @@ class PropertyController extends Controller
                     'version_id' => $request->version_id ?? null,
                     'transmision' => $request->transmision ?? null,
                     'color' => $request->color ?? null,
+                    // Inicio cambios Carmetric
+                    'traction' => $request->traction ?? null,
+                    'shared' => $request->share ? 1 : 0
+                    // Fin cambios Carmetric
                 ]);
 
                 $d_property_specifications = PropertySpecification::where('property_id', $request->property_id)->get();
@@ -604,6 +615,10 @@ class PropertyController extends Controller
 
     public function getModels(Request $request, $username)
     {
+        // Inicio cambios Carmetric - Emitimos evento para sincronizar modelos con Meli antes de obtenerlos de la BD
+        event(new \Reda\Integraciones\Events\ModelsRequested($request->brand_id));
+        // Fin cambios Carmetric
+
         $models = UserCarModel::where('brand_id', $request->brand_id)
             ->select('id', 'name')
             ->get();
@@ -613,6 +628,10 @@ class PropertyController extends Controller
 
     public function getVersions(Request $request, $username)
     {
+        // Inicio cambios Carmetric - Emitimos evento para sincronizar versiones con Meli antes de obtenerlas de la BD
+        event(new \Reda\Integraciones\Events\VersionsRequested($request->model_id));
+        // Fin cambios Carmetric        
+    
         $versions = UserCarVersion::where('model_id', $request->model_id)
             ->select('id', 'name')
             ->get();

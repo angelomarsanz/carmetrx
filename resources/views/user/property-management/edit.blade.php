@@ -909,6 +909,10 @@
         var values = "{!! $values !!}";
         var stateUrl = "{{ route('user.property_management.get_state_cities') }}";
         var cityUrl = "{{ route('user.property_management.get_cities') }}";
+        // Inicio cambios Carmetric
+        var modelUrl = "{{ route('user.property_management.get_models') }}";
+        var versionUrl = "{{ route('user.property_management.get_versions') }}";
+        // Fin cambios Carmetric
         var storeUrl = "{{ route('user.property.imagesupdate') }}";
         var removeUrl = "{{ route('user.property.imagermv') }}";
         var rmvdbUrl = "{{ route('user.property.imgdbrmv') }}";

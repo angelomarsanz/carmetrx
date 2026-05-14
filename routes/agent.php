@@ -63,6 +63,12 @@ Route::prefix('agent')->middleware(['TFRAcessPermission:Agent'])->group(function
     
       Route::post('/property/video-img-rmv', 'videoImgrmv')->name('agent.property_management.videoImgrmv');
       Route::post('/property/floor-img-rmv', 'floorImgrmv')->name('agent.property_management.floorImgrmv');
+
+      // Inicio cambios Carmetric
+      Route::get('/get-models', 'getModels')->name('agent.property_management.get_models');
+      Route::get('/get-versions', 'getVersions')->name('agent.property_management.get_versions');
+      // Fin cambios Carmetric
+
     });
 
     // Project Management route start

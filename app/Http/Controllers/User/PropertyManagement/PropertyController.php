@@ -30,6 +30,7 @@ use App\Models\User\UserCarVersion;
 use App\Http\Requests\PropertyManagement\PropertyStoreRequest;
 use App\Traits\Tenant\Frontend\Language as TenantFrontendLanguage;
 use App\Http\Requests\PropertyManagement\PropertyUpdateRequest;
+use Illuminate\Support\Facades\Log;
 
 class PropertyController extends Controller
 {
@@ -118,6 +119,7 @@ class PropertyController extends Controller
         $information['propertyCategories'] = Category::where('user_id', 0)
             ->where([['type', $request->type], ['status', 1]])
             ->get();
+
         $information['propertyCountries'] = Country::where('user_id', 0)->get();
         $information['amenities'] = Amenity::where('user_id', 0)->where('status', 1)->get();
         $information['states'] = State::where('user_id', 0)->get();

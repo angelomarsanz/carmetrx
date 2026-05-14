@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <a href="{{ route('agent.property_management.create_property', getParam()) . '?type=commercial' }}"
+                            <a href="{{ route('agent.property_management.create_property', getParam()) . '?type=autos_camionetas' }}"
                                 class="d-block text-decoration-none" style="text-decoration: none !important;">
                                 <div class="card card-stats card-round">
                                     <div class="card-body ">
@@ -48,12 +48,12 @@
                                             <div class="col col-stats ml-3 ml-sm-0">
                                                 <div class="numbers mx-auto text-center">
                                                     <h2 class="card-title mt-2 mb-4 text-uppercase">
-                                                        {{ __('Commercial') }}
+                                                        Autos y Camionetas
                                                     </h2>
                                                     <p class="card-category">
                                                         <strong>{{ __('Total') }}:</strong>
-                                                        {{ $commertialCount }}
-                                                        {{ __('Properties') }}
+                                                         {{ $autosCamionetasCount ?? 0 }}
+                                                        Vehículos
                                                     </p>
                                                 </div>
                                             </div>
@@ -63,7 +63,7 @@
                             </a>
                         </div>
                         <div class="col-lg-6">
-                            <a href="{{ route('agent.property_management.create_property', getParam()) . '?type=residential' }}"
+                            <a href="{{ route('agent.property_management.create_property', getParam()) . '?type=camiones' }}"
                                 class="d-block text-decoration-none" style="text-decoration: none !important;">
                                 <div class="card card-stats card-round">
                                     <div class="card-body ">
@@ -78,12 +78,12 @@
                                             <div class="col col-stats ml-3 ml-sm-0">
                                                 <div class="numbers mx-auto text-center">
                                                     <h2 class="card-title mt-2 mb-4 text-uppercase">
-                                                        {{ __('Residential') }}
+                                                        Camiones
                                                     </h2>
                                                     <p class="card-category">
                                                         <strong>{{ __('Total') }}:</strong>
-                                                        {{ $residentialCount }}
-                                                        {{ __('Properties') }}
+                                                        {{ $camionesCount ?? 0 }}
+                                                        Vehículos
                                                     </p>
                                                 </div>
                                             </div>

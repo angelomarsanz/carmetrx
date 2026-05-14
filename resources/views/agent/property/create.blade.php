@@ -415,15 +415,16 @@
 
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>{{ __('Share this car') }}</label>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="share" id="shareCar" value="1">
-                                                <label class="form-check-label" for="shareCar">{{ __('Share this car') }}</label>
-                                            </div>
+                                            <label class="d-block">
+                                                <input type="checkbox" name="share" id="shareCar" value="1">
+                                                {{ __('Share this car') }}
+                                            </label>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">                                        <div class="form-group">
+
+                                    <div class="col-lg-3"> 
+                                        <div class="form-group">
                                             <label>{{ __('Status') }} <span
                                                     class="text-danger">{{ '*' }}</span> </label>
                                             <select name="status" id="" class="form-control">
@@ -748,8 +749,10 @@
         var removeUrl = "{{ route('agent.property.imagermv', getParam()) }}";
         var stateUrl = "{{ route('agent.property_specification.get_state_cities', getParam()) }}";
         let cityUrl = "{{ route('agent.property_specification.get_cities', getParam()) }}";
-        let modelUrl = "{{ route('agent.property_management.get_models', getParam()) }}";
-        let versionUrl = "{{ route('agent.property_management.get_versions', getParam()) }}";
+        // Inicio cambios Carmetric
+        var modelUrl = "{{ route('agent.property_management.get_models', getParam()) }}";
+        var versionUrl = "{{ route('agent.property_management.get_versions', getParam()) }}";
+        // Fin cambios Carmetric
         var galleryImages = {{ $currentPackage->number_of_property_gallery_images }};
         var selectAmenLocal = "{{ __('Select Amenities') }}";
         var genPromptUrl = "{{ route('generate.prompt') }}"
