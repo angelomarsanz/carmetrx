@@ -46,5 +46,10 @@
     "No se encontraron modelos para esta marca" : "No se encontraron modelos para esta marca.",
     "No se encontraron versiones para este modelo" : "No se encontraron versiones para este modelo.",
     "Sincronización de marcas con Mercado Libre finalizada" : "Sincronización de marcas con Mercado Libre finalizada.",
-    "Token de Mercado Libre obtenido y guardado correctamente" : "Token de Mercado Libre obtenido y guardado correctamente."
+    "Token de Mercado Libre obtenido y guardado correctamente" : "Token de Mercado Libre obtenido y guardado correctamente.",
+    "Token no proporcionado" : "Token no proporcionado",
+    "Ocurrió un error técnico al intentar actualizar las marcas desde Mercado Libre: " : "Ocurrió un error técnico al intentar actualizar las marcas desde Mercado Libre: ",
+    "No se pudo obtener la lista de estados desde Mercado Libre" : "No se pudo obtener la lista de estados desde Mercado Libre.",
+    "Ocurrió un error técnico al intentar actualizar los estados desde Mercado Libre: " : "Ocurrió un error técnico al intentar actualizar los estados desde Mercado Libre: ",
+    "La respuesta de Mercado Libre no tiene el formato esperado" : "La respuesta de Mercado Libre no tiene el formato esperado."
 }

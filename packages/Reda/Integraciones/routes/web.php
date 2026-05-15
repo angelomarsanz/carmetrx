@@ -33,6 +33,9 @@ Route::domain($domain)->group(function () use ($domain) {
             Route::get('mercado-libre/importadores', [ImportadorController::class, 'index'])->name('reda.integraciones.mercado_libre.admin.importadores.index');
             Route::get('mercado-libre/sincronizar-marcas/{token?}', [ConfiguracionController::class, 'sincronizarMarcasMeli'])
                 ->name('reda.integraciones.mercado_libre.admin.sincronizar_marcas');
+            Route::get('mercado-libre/sincronizar-estados/{token?}', [ConfiguracionController::class, 'sincronizarEstadosMeli'])
+                ->name('reda.integraciones.mercado_libre.admin.sincronizar_estados');
+
         });
     });
 });
