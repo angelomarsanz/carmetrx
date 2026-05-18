@@ -16,11 +16,11 @@ ARCHIVOS_PHP_PUNTUALES=(
 
     #"app/Http/Controllers/User/PropertyManagement/StateController.php"
     #"packages/Reda/Integraciones/src/Events/StatesRequested.php"
-    "packages/Reda/Integraciones/src/Listeners/SyncStatesWithMeli.php"
+    #packages/Reda/Integraciones/src/Listeners/SyncStatesWithMeli.php"
     
     #"app/Http/Controllers/User/PropertyManagement/CityController.php"
     #"packages/Reda/Integraciones/src/Events/CitiesRequested.php"
-    "packages/Reda/Integraciones/src/Listeners/SyncCitiesWithMeli.php"
+    #packages/Reda/Integraciones/src/Listeners/SyncCitiesWithMeli.php"
 
     "app/Http/Controllers/Agent/PropertyController.php"
     #"packages/Reda/Integraciones/resources/js/mercado_libre/autos/indexAutosAgregarEditar.js"
