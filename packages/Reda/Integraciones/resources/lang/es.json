@@ -51,5 +51,7 @@
     "Ocurrió un error técnico al intentar actualizar las marcas desde Mercado Libre: " : "Ocurrió un error técnico al intentar actualizar las marcas desde Mercado Libre: ",
     "No se pudo obtener la lista de estados desde Mercado Libre" : "No se pudo obtener la lista de estados desde Mercado Libre.",
     "Ocurrió un error técnico al intentar actualizar los estados desde Mercado Libre: " : "Ocurrió un error técnico al intentar actualizar los estados desde Mercado Libre: ",
-    "La respuesta de Mercado Libre no tiene el formato esperado" : "La respuesta de Mercado Libre no tiene el formato esperado."
+    "La respuesta de Mercado Libre no tiene el formato esperado" : "La respuesta de Mercado Libre no tiene el formato esperado.",
+    "No se encontraron ciudades para este estado" : "No se encontraron ciudades para este estado.",
+    "No se encontraron zonas para esta ciudad" : "No se encontraron zonas para esta ciudad."
 }

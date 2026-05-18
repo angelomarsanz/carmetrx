@@ -483,8 +483,8 @@ class ConfiguracionController extends Controller
                         DB::table('paises_melis')->insert([
                             'user_country_id' => $countryId,
                             'datos_meli'      => json_encode([
-                                'id_meli' => $idMeli,
-                                'name'    => $nameMeli
+                                'meli_id' => $idMeli,
+                                'name_id'    => $nameMeli
                             ]),
                             'created_at'      => now(),
                             'updated_at'      => now(),

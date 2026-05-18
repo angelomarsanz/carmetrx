@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User\Property\StateContent;
 use App\Traits\Tenant\Frontend\Language as TenantFrontendLanguage;
+use Illuminate\Support\Facades\Log;
 
 class StateController extends Controller
 {
@@ -40,6 +41,12 @@ class StateController extends Controller
     }
     public function getState(Request $request)
     {
+        Log::info("stateController, getState, request->id: ".$request->id);
+
+        // Inicio cambios Carmetric
+        event(new \Reda\Integraciones\Events\StatesRequested($request->id));
+        // Fin cambios Carmetric
+
         $tenantId = Auth::guard('web')->user()->id;
         $language = $this->currentLang($tenantId);
         $states = State::where([['user_id', $tenantId], ['country_id', $request->id]])->get()->map(function ($state) use ($language) {
@@ -64,6 +71,11 @@ class StateController extends Controller
         //     $city->name = $city->getContent($language->id)->name;
         // });
 
+        Log::info("stateController, getStateCities, request->id: ".$request->id);
+
+        // Inicio cambios Carmetric
+        event(new \Reda\Integraciones\Events\StatesRequested($request->id));
+        // Fin cambios Carmetric
 
         $states = State::where('country_id', $request->id)->select('id')->get();
         $states->map(function ($state) {

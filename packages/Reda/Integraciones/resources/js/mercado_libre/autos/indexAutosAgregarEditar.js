@@ -63,6 +63,40 @@ export const indexAutosAgregarEditar = () => {
                             }
                         } catch (e) {}
                     }
+                    if (settings.url.match(/\/get-states-cities(\?|$)/)) {
+                        try {
+                            let data = xhr.responseJSON || JSON.parse(xhr.responseText);
+                            if (data && data.versions && data.versions.length === 0) {
+                                $.notify({
+                                    icon: 'fa fa-exclamation-triangle',
+                                    title: '<strong>Atención</strong>',
+                                    message: window.RedaIntegraciones["No se encontraron ciudades para este estado"] || "No se encontraron ciudades para este estado.",
+                                }, {
+                                    type: 'warning',
+                                    placement: { from: 'top', align: 'right' },
+                                    delay: 5000,
+                                    z_index: 2000
+                                });
+                            }
+                        } catch (e) {}
+                    }
+                    if (settings.url.match(/\/get-cities(\?|$)/)) {
+                        try {
+                            let data = xhr.responseJSON || JSON.parse(xhr.responseText);
+                            if (data && data.versions && data.versions.length === 0) {
+                                $.notify({
+                                    icon: 'fa fa-exclamation-triangle',
+                                    title: '<strong>Atención</strong>',
+                                    message: window.RedaIntegraciones["No se encontraron zonas para esta ciudad"] || "No se encontraron zonas para esta ciudad.",
+                                }, {
+                                    type: 'warning',
+                                    placement: { from: 'top', align: 'right' },
+                                    delay: 5000,
+                                    z_index: 2000
+                                });
+                            }
+                        } catch (e) {}
+                    }
                 });
             });
         }

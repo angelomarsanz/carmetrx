@@ -8,6 +8,11 @@ use Reda\Integraciones\Events\ModelsRequested;
 use Reda\Integraciones\Listeners\SyncModelsWithMeli;
 use Reda\Integraciones\Events\VersionsRequested;
 use Reda\Integraciones\Listeners\SyncVersionsWithMeli;
+use Reda\Integraciones\Events\StatesRequested;
+use Reda\Integraciones\Listeners\SyncStatesWithMeli;
+use Reda\Integraciones\Events\CitiesRequested;
+use Reda\Integraciones\Listeners\SyncCitiesWithMeli;
+
 
 
 class IntegracionesServiceProvider extends ServiceProvider
@@ -58,6 +63,18 @@ class IntegracionesServiceProvider extends ServiceProvider
         Event::listen(
             VersionsRequested::class,
             SyncVersionsWithMeli::class
+        );
+
+        // Registro para estados
+        Event::listen(
+            StatesRequested::class,
+            SyncStatesWithMeli::class
+        );
+
+        // Registro para ciudades
+        Event::listen(
+            CitiesRequested::class,
+            SyncCitiesWithMeli::class
         );
     }
 }

@@ -45,6 +45,10 @@ class CityController extends Controller
 
     public function getCities(Request $request)
     {
+        // Inicio cambios Carmetric
+        event(new \Reda\Integraciones\Events\CitiesRequested($request->state_id));
+        // Fin cambios Carmetric
+
         $cities = City::where([['state_id', $request->state_id], ['user_id', 0]])
             ->select('id')
             ->orderBy('serial_number', 'ASC')
